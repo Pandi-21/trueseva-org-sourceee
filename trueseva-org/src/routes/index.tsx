@@ -25,6 +25,7 @@ import { supabase } from "@/integrations/supabase/client";
 import {
   SUPPORT_TYPES,
   TN_DISTRICTS,
+  TN_DISTRICT_ALIASES,
   getNgosForDistrict,
   getSmileHomeDetails,
   SMILE_HOMES,
@@ -103,10 +104,26 @@ function scrollToSection(id: string, e?: React.MouseEvent) {
   if (e) e.preventDefault();
   if (id === "home") {
     window.scrollTo({ top: 0, behavior: "smooth" });
-  } else {
-    const el = document.getElementById(id);
-    if (el) {
-      el.scrollIntoView({ behavior: "smooth" });
+    return;
+  }
+  const el = document.getElementById(id);
+  if (el) {
+    const headerOffset = 85;
+    const rect = el.getBoundingClientRect();
+    const scrollTop = window.pageYOffset || document.documentElement.scrollTop;
+    const targetY = rect.top + scrollTop - headerOffset;
+    window.scrollTo({
+      top: Math.max(0, targetY),
+      behavior: "smooth",
+    });
+
+    if (id === "enquiry-form") {
+      setTimeout(() => {
+        const firstInput = document.getElementById("full_name") as HTMLInputElement | null;
+        if (firstInput && document.activeElement !== firstInput) {
+          firstInput.focus({ preventScroll: true });
+        }
+      }, 500);
     }
   }
 }
@@ -340,25 +357,21 @@ function Vision() {
 // ==================== SECTION: ELDERLY HOMES DIRECTORY ====================
 
 function ElderlyHomesDirectory() {
-  const [expandedId, setExpandedId] = useState<number | null>(null);
+  const [selectedDistrict, setSelectedDistrict] = useState<string>("");
+  const [selectedHomeId, setSelectedHomeId] = useState<string>("all");
 
-  const toggleExpand = (id: number) => {
-    setExpandedId((prev) => {
-      const next = prev === id ? null : id;
-      if (next !== null) {
-        setTimeout(() => {
-          const el = document.getElementById(`home-card-${id}`);
-          if (el) {
-            el.scrollIntoView({ behavior: "smooth", block: "nearest" });
-          }
-        }, 60);
-      }
-      return next;
-    });
-  };
+  const normalizedDistrict = TN_DISTRICT_ALIASES[selectedDistrict] || selectedDistrict;
+  const districtHomes = selectedDistrict
+    ? SMILE_HOMES.filter((h) => h.city === selectedDistrict || h.city === normalizedDistrict)
+    : [];
+
+  const displayedHomes =
+    selectedHomeId !== "all"
+      ? districtHomes.filter((h) => h.id === Number(selectedHomeId))
+      : districtHomes;
 
   const handleSelectHome = (home: SmileHome, e: React.MouseEvent) => {
-    scrollToSection("contact", e);
+    scrollToSection("enquiry-form", e);
     window.dispatchEvent(
       new CustomEvent("select-smile-home", {
         detail: { city: home.city, ngo: home.label },
@@ -366,171 +379,199 @@ function ElderlyHomesDirectory() {
     );
   };
 
+  const handleDistrictChange = (district: string) => {
+    setSelectedDistrict(district);
+    setSelectedHomeId("all");
+  };
+
   return (
-    <section id="directory" className="pt-14 pb-10 lg:pt-16 lg:pb-12 bg-muted/20 border-t border-border/50">
+    <section id="directory" className="pt-14 pb-14 lg:pt-16 lg:pb-16 bg-muted/20 border-t border-border/50">
       <div className="mx-auto max-w-7xl px-5 lg:px-8">
         <Reveal className="max-w-3xl">
           <p className="eyebrow">Elderly Homes Directory</p>
           <h2 className="mt-4 text-4xl font-medium md:text-5xl">Explore SMILE Elderly Homes</h2>
-          <p className="mt-5 text-lg text-muted-foreground">
-            Explore the 16 verified SMILE elderly care homes across 10 cities and districts in Tamil Nadu. Connect directly to provide transparent support with dignity and care.
+          <p className="mt-4 text-lg text-muted-foreground">
+            Filter by district to find verified SMILE elderly care homes in Tamil Nadu. Connect directly to provide transparent support with dignity and care.
           </p>
         </Reveal>
 
-        <div className="mt-10 grid gap-6 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 items-stretch">
-          {SMILE_HOMES.map((home, index) => {
-            const isExpanded = expandedId === home.id;
-            return (
-              <Reveal
-                key={home.id}
-                delay={(index % 4) * 80}
-                className={isExpanded ? "lg:col-span-3 xl:col-span-4 md:col-span-2 w-full" : "h-full"}
-              >
-                <div
-                  id={`home-card-${home.id}`}
-                  className={`group relative flex flex-col h-full rounded-2xl border bg-card p-5 sm:p-6 shadow-xs transition-all duration-300 ${isExpanded
-                      ? "border-primary ring-2 ring-primary/20 shadow-xl"
-                      : "border-border hover:border-primary/50 hover:shadow-xl hover:-translate-y-1.5"
-                    }`}
-                >
-                  {/* Top Meta Tag */}
-                  <div className="flex items-center justify-between">
-                    <span className="inline-block rounded-md bg-primary/10 px-2.5 py-0.5 text-xs font-bold uppercase tracking-wider text-primary">
-                      Home {home.sNo > 9 ? `0${home.sNo}`.slice(-2) : `0${home.sNo}`}
-                    </span>
-                    <span className="text-[11px] font-semibold text-muted-foreground">
-                      {home.city}
-                    </span>
-                  </div>
+        {/* Filter Controls Bar */}
+        <Reveal delay={100} className="mt-8">
+          <div className="rounded-2xl border border-border/70 bg-card p-6 shadow-sm">
+            <div className="flex items-center gap-2 pb-4 border-b border-border/50">
+              <Building2 className="h-5 w-5 text-primary" />
+              <h3 className="font-semibold text-foreground text-base">Care Homes by District</h3>
+            </div>
 
-                  {/* Home Name & District */}
-                  <div className="mt-3">
-                    <h3 className="text-lg font-bold leading-snug text-foreground group-hover:text-primary transition-colors">
-                      {home.name}
-                    </h3>
-                    <p className="mt-1 flex items-center gap-1.5 text-xs text-muted-foreground">
-                      <MapPin className="h-3.5 w-3.5 shrink-0 text-primary" />
-                      <span>{home.city}, Tamil Nadu</span>
-                    </p>
-                  </div>
-
-                  {/* Branch / Area subtitle */}
-                  <p className="mt-2 text-xs font-medium text-foreground/85 line-clamp-1">
-                    {home.label.replace(home.name + " – ", "")}
-                  </p>
-
-                  {/* Verification Status Badge */}
-                  <div className="mt-3">
-                    <span className="inline-flex items-center gap-1.5 rounded-full px-2.5 py-1 text-[11px] font-semibold border bg-emerald-500/10 text-emerald-700 dark:text-emerald-400 border-emerald-500/30">
-                      <span className="h-1.5 w-1.5 rounded-full bg-emerald-500 shrink-0" />
-                      <span>SMILE Verified Home</span>
-                    </span>
-                  </div>
-
-                  {/* Compact Address Preview */}
-                  <div className="mt-4 flex-1 rounded-lg bg-muted/30 p-3 text-xs space-y-2">
-                    <p className="text-muted-foreground leading-relaxed line-clamp-2">
-                      <strong className="text-foreground">Address: </strong>{home.address}
-                    </p>
-                    <div className="pt-1.5 border-t border-border/50 flex flex-col gap-1 text-muted-foreground">
-                      <div className="flex items-center gap-1.5 truncate">
-                        <Phone className="h-3 w-3 text-primary shrink-0" />
-                        <a href={`tel:${home.phone}`} className="hover:text-primary font-medium text-[11px]">+91 {home.phone}</a>
-                      </div>
-                      <div className="flex items-center gap-1.5 truncate">
-                        <Mail className="h-3 w-3 text-primary shrink-0" />
-                        <a href={`mailto:${home.email}`} className="hover:text-primary text-[11px] truncate">{home.email}</a>
-                      </div>
-                    </div>
-                  </div>
-
-                  {/* Support Status */}
-                  <div className="mt-4 pt-3 border-t border-border/60 flex items-center justify-between text-xs">
-                    <span className="text-muted-foreground">Status:</span>
-                    <span className="font-medium text-emerald-600 dark:text-emerald-400">Open for Direct Support</span>
-                  </div>
-
-                  {/* Action Buttons */}
-                  <div className="mt-4 flex gap-2">
-                    <button
-                      type="button"
-                      onClick={() => toggleExpand(home.id)}
-                      className="flex-1 inline-flex items-center justify-center gap-1.5 rounded-lg border border-primary/30 bg-primary/10 px-3 py-2 text-xs font-semibold text-primary transition-all duration-300 hover:bg-primary hover:text-white hover:shadow-md cursor-pointer"
-                    >
-                      <span>{isExpanded ? "Close" : "View Contact"}</span>
-                      {isExpanded ? (
-                        <ChevronUp className="h-3.5 w-3.5" />
-                      ) : (
-                        <ChevronDown className="h-3.5 w-3.5" />
-                      )}
-                    </button>
-                    <button
-                      type="button"
-                      onClick={(e) => handleSelectHome(home, e)}
-                      className="inline-flex items-center justify-center gap-1 rounded-lg bg-primary px-3 py-2 text-xs font-semibold text-white transition-all hover:bg-primary/90 shadow-xs cursor-pointer"
-                    >
-                      <span>Support</span>
-                      <ArrowRight className="h-3 w-3" />
-                    </button>
-                  </div>
-
-                  {/* Inline Expansion Area */}
-                  {isExpanded && (
-                    <div className="mt-6 border-t border-border pt-6 transition-all duration-300 text-left">
-                      <h4 className="text-base font-semibold text-foreground">Official Home Verification & Contact</h4>
-
-                      <div className="mt-4 space-y-4">
-                        <div className="rounded-xl border bg-muted/20 p-4">
-                          <h5 className="font-semibold text-foreground flex items-center gap-2 text-xs uppercase tracking-wider text-muted-foreground">
-                            <Building2 className="h-4 w-4 text-primary" />
-                            Home Information
-                          </h5>
-                          <div className="mt-2.5 grid gap-2 sm:grid-cols-2 text-xs text-muted-foreground">
-                            <div><strong className="text-foreground">Full Name:</strong> {home.name}</div>
-                            <div><strong className="text-foreground">City / District:</strong> {home.city}</div>
-                            <div><strong className="text-foreground">Branch / Area:</strong> {home.label.replace(home.name + " – ", "")}</div>
-                            <div><strong className="text-foreground">Registry No.:</strong> SMILE-TN-{home.sNo > 9 ? home.sNo : `0${home.sNo}`}</div>
-                          </div>
-                        </div>
-
-                        <div className="grid gap-4 sm:grid-cols-2">
-                          <div className="rounded-xl border bg-card p-4 text-xs">
-                            <h5 className="font-semibold text-foreground flex items-center gap-1.5 uppercase tracking-wider text-[11px] text-muted-foreground">
-                              <Phone className="h-3.5 w-3.5 text-primary" />
-                              Direct Contact
-                            </h5>
-                            <div className="mt-2 space-y-1.5">
-                              <div><a href={`tel:${home.phone}`} className="font-semibold text-foreground hover:text-primary text-sm">+91 {home.phone}</a></div>
-                              <div><a href={`mailto:${home.email}`} className="text-muted-foreground hover:text-primary truncate block">{home.email}</a></div>
-                            </div>
-                          </div>
-
-                          <div className="rounded-xl border bg-card p-4 text-xs">
-                            <h5 className="font-semibold text-foreground flex items-center gap-1.5 uppercase tracking-wider text-[11px] text-muted-foreground">
-                              <MapPin className="h-3.5 w-3.5 text-primary" />
-                              Official Physical Address
-                            </h5>
-                            <p className="mt-2 text-muted-foreground leading-relaxed">{home.address}</p>
-                          </div>
-                        </div>
-
-                        <div className="pt-1">
-                          <button
-                            type="button"
-                            onClick={(e) => handleSelectHome(home, e)}
-                            className="inline-flex w-full items-center justify-center gap-2 rounded-xl bg-primary px-4 py-2.5 text-xs font-semibold text-white shadow-xs hover:bg-primary/90 transition-colors cursor-pointer"
-                          >
-                            <span>Support {home.name} ({home.city}) in Form</span>
-                            <ArrowRight className="h-3.5 w-3.5" />
-                          </button>
-                        </div>
-                      </div>
-                    </div>
-                  )}
+            <div className="mt-5 grid gap-4 md:grid-cols-2">
+              {/* Dropdown 1: Select District */}
+              <div>
+                <label htmlFor="directory-district-filter" className="block text-xs font-bold uppercase tracking-wider text-muted-foreground mb-2">
+                  1. Select District / City
+                </label>
+                <div className="relative">
+                  <select
+                    id="directory-district-filter"
+                    value={selectedDistrict}
+                    onChange={(e) => handleDistrictChange(e.target.value)}
+                    className="w-full appearance-none rounded-xl border border-input bg-background px-4 py-3 pr-10 text-sm font-medium text-foreground transition-all hover:border-primary/50 focus:border-primary focus:outline-none focus:ring-2 focus:ring-primary/20 shadow-xs cursor-pointer"
+                  >
+                    <option value="">-- Choose a District / City --</option>
+                    {TN_DISTRICTS.map((d) => {
+                      const count = SMILE_HOMES.filter((h) => h.city === d).length;
+                      return (
+                        <option key={d} value={d}>
+                          {d} ({count} {count === 1 ? "Home" : "Homes"})
+                        </option>
+                      );
+                    })}
+                  </select>
+                  <ChevronDown className="pointer-events-none absolute right-3.5 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
                 </div>
-              </Reveal>
-            );
-          })}
+              </div>
+
+              {/* Dropdown 2: Select Specific Home */}
+              <div>
+                <label htmlFor="directory-home-filter" className="block text-xs font-bold uppercase tracking-wider text-muted-foreground mb-2">
+                  2. Select Care Home
+                </label>
+                <div className="relative">
+                  <select
+                    id="directory-home-filter"
+                    value={selectedHomeId}
+                    onChange={(e) => setSelectedHomeId(e.target.value)}
+                    disabled={!selectedDistrict}
+                    className="w-full appearance-none rounded-xl border border-input bg-background px-4 py-3 pr-10 text-sm font-medium text-foreground transition-all hover:border-primary/50 focus:border-primary focus:outline-none focus:ring-2 focus:ring-primary/20 shadow-xs disabled:opacity-50 disabled:cursor-not-allowed cursor-pointer"
+                  >
+                    {!selectedDistrict ? (
+                      <option value="all">← First select a District</option>
+                    ) : (
+                      <>
+                        <option value="all">All Homes in {selectedDistrict} ({districtHomes.length})</option>
+                        {districtHomes.map((home) => (
+                          <option key={home.id} value={home.id}>
+                            {home.name} – {home.label.replace(home.name + " – ", "")}
+                          </option>
+                        ))}
+                      </>
+                    )}
+                  </select>
+                  <ChevronDown className="pointer-events-none absolute right-3.5 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
+                </div>
+              </div>
+            </div>
+          </div>
+        </Reveal>
+
+        {/* Dynamic Filter Results Area */}
+        <div className="mt-8">
+          {!selectedDistrict ? (
+            /* Empty prompt state */
+            <Reveal delay={150}>
+              <div className="rounded-2xl border border-dashed border-border bg-card/60 p-10 text-center">
+                <div className="mx-auto flex h-14 w-14 items-center justify-center rounded-full bg-primary/10 text-primary">
+                  <MapPin className="h-7 w-7" />
+                </div>
+                <h4 className="mt-4 text-lg font-semibold text-foreground">Select a District to View Homes</h4>
+                <p className="mt-2 text-sm text-muted-foreground max-w-md mx-auto">
+                  Choose a district from the dropdown filter above to see verified SMILE elderly care homes in that region.
+                </p>
+              </div>
+            </Reveal>
+          ) : displayedHomes.length === 0 ? (
+            <div className="rounded-2xl border bg-card p-10 text-center">
+              <p className="text-muted-foreground">No elderly care homes found for the selected filter.</p>
+            </div>
+          ) : (
+            <div>
+              <div className="mb-5 flex items-center justify-between">
+                <p className="text-sm font-semibold text-muted-foreground">
+                  Showing <span className="text-foreground font-bold">{displayedHomes.length}</span> verified SMILE {displayedHomes.length === 1 ? "home" : "homes"} in <span className="text-primary font-bold">{selectedDistrict}</span>
+                </p>
+              </div>
+
+              <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
+                {displayedHomes.map((home, index) => (
+                  <Reveal key={home.id} delay={index * 60} className="h-full">
+                    <div className="group relative flex flex-col h-full rounded-2xl border border-border bg-card p-6 shadow-xs hover:border-primary/50 hover:shadow-lg transition-all duration-300">
+                      {/* Top Header Badge */}
+                      <div className="flex items-center justify-between">
+                        <span className="inline-block rounded-md bg-primary/10 px-2.5 py-0.5 text-xs font-bold uppercase tracking-wider text-primary">
+                          Home {home.sNo > 9 ? `0${home.sNo}`.slice(-2) : `0${home.sNo}`}
+                        </span>
+                        <span className="inline-flex items-center gap-1.5 rounded-full px-2.5 py-0.5 text-[11px] font-semibold border bg-emerald-500/10 text-emerald-700 dark:text-emerald-400 border-emerald-500/30">
+                          <span className="h-1.5 w-1.5 rounded-full bg-emerald-500 shrink-0" />
+                          <span>SMILE Verified</span>
+                        </span>
+                      </div>
+
+                      {/* Home Name */}
+                      <div className="mt-4">
+                        <h3 className="text-lg font-bold leading-snug text-foreground group-hover:text-primary transition-colors">
+                          {home.name}
+                        </h3>
+                        <p className="mt-1 text-sm font-medium text-foreground/85">
+                          {home.label.replace(home.name + " – ", "")}
+                        </p>
+                        <p className="mt-1 flex items-center gap-1.5 text-xs text-muted-foreground">
+                          <MapPin className="h-3.5 w-3.5 shrink-0 text-primary" />
+                          <span>{home.city}, Tamil Nadu</span>
+                        </p>
+                      </div>
+
+                      {/* Contact Info (Unified Phone: +91 91504 08850, NO ADDRESS) */}
+                      <div className="mt-5 rounded-xl bg-muted/30 p-3.5 text-xs space-y-2 border border-border/40">
+                        <div className="flex items-center gap-2">
+                          <Phone className="h-3.5 w-3.5 text-primary shrink-0" />
+                          <span className="text-muted-foreground">Helpline / Contact:</span>
+                          <a
+                            href={`tel:${home.phone}`}
+                            className="font-bold text-foreground hover:text-primary transition-colors text-xs ml-auto"
+                          >
+                            +91 {home.phone}
+                          </a>
+                        </div>
+                        <div className="flex items-center gap-2 pt-1 border-t border-border/40">
+                          <Mail className="h-3.5 w-3.5 text-primary shrink-0" />
+                          <span className="text-muted-foreground">Email:</span>
+                          <a
+                            href={`mailto:${home.email}`}
+                            className="text-muted-foreground hover:text-primary transition-colors truncate text-xs ml-auto max-w-[180px]"
+                          >
+                            {home.email}
+                          </a>
+                        </div>
+                      </div>
+
+                      {/* Status */}
+                      <div className="mt-4 flex items-center justify-between text-xs">
+                        <span className="text-muted-foreground">Status:</span>
+                        <span className="inline-flex items-center gap-2 font-semibold text-emerald-600 dark:text-emerald-400">
+                          <span className="relative flex h-2 w-2 shrink-0">
+                            <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75"></span>
+                            <span className="relative inline-flex rounded-full h-2 w-2 bg-emerald-500"></span>
+                          </span>
+                          <span>Verified Home</span>
+                        </span>
+                      </div>
+
+                      {/* Action Button */}
+                      <div className="mt-5 pt-4 border-t border-border/50">
+                        <button
+                          type="button"
+                          onClick={(e) => handleSelectHome(home, e)}
+                          className="w-full inline-flex items-center justify-center gap-2 rounded-xl bg-primary px-4 py-2.5 text-xs font-semibold text-white shadow-xs hover:bg-primary/90 active:scale-95 transition-all cursor-pointer"
+                        >
+                          <span>Support {home.name}</span>
+                          <ArrowRight className="h-3.5 w-3.5" />
+                        </button>
+                      </div>
+                    </div>
+                  </Reveal>
+                ))}
+              </div>
+            </div>
+          )}
         </div>
       </div>
     </section>
@@ -569,25 +610,36 @@ function HowItWorks() {
             Support elderly residents by meeting their essential needs directly. Contact the home administrator to confirm requirements before sending goods or financial assistance.
           </p>
         </Reveal>
-        <ol className="relative mt-12 grid gap-10 border-l border-border pl-8 lg:grid-cols-4 lg:gap-8 lg:border-l-0 lg:border-t lg:pl-0 lg:pt-10">
+        <ol className="relative mt-12 grid gap-10 border-l-2 border-primary/25 pl-8 lg:grid-cols-4 lg:gap-8 lg:border-l-0 lg:border-t-2 lg:pl-0 lg:pt-10">
           {STEPS.map((s, i) => (
-            <li key={s.t} className="relative group cursor-pointer transition-transform duration-300 hover:-translate-y-1">
+            <li
+              key={s.t}
+              className="relative group cursor-pointer transition-transform duration-300 hover:-translate-y-1 active:scale-[0.98]"
+            >
               <Reveal delay={i * 120}>
-                {/* Interactive Animated Dot on line */}
+                {/* Interactive Animated Dot on line with continuous radar pulse on all screens */}
                 <div
-                  className="absolute -left-[37px] top-1 lg:-top-[46px] lg:left-0 flex items-center justify-center h-3 w-3"
+                  className="absolute -left-[39px] top-1 lg:-top-[47px] lg:left-0 flex items-center justify-center h-3.5 w-3.5"
                   aria-hidden
                 >
-                  {/* Outer animated ripple halo */}
-                  <span className="absolute h-3 w-3 rounded-full bg-primary opacity-0 transition-all duration-500 ease-out group-hover:scale-[2.6] group-hover:opacity-30" />
+                  {/* Outer animated ripple halo - alive across all viewports with staggered ripple */}
+                  <span
+                    className="absolute h-3.5 w-3.5 rounded-full bg-primary animate-step-radar transition-all duration-500 ease-out group-hover:scale-[3] group-hover:opacity-40"
+                    style={{ animationDelay: `${i * 1000}ms` }}
+                  />
                   {/* Medium ring glow */}
-                  <span className="absolute h-3 w-3 rounded-full bg-primary/20 opacity-0 transition-all duration-300 ease-out group-hover:scale-[1.8] group-hover:opacity-75" />
-                  {/* Core Dot with scale, ring and shadow glow */}
-                  <span className="relative h-3 w-3 rounded-full bg-primary transition-all duration-300 ease-out group-hover:scale-125 group-hover:ring-4 group-hover:ring-primary/25 group-hover:shadow-[0_0_12px_rgba(233,88,40,0.5)]" />
+                  <span
+                    className="absolute h-3.5 w-3.5 rounded-full bg-primary/30 transition-all duration-300 ease-out group-hover:scale-[1.9] group-hover:opacity-80"
+                  />
+                  {/* Core Dot with glowing shadow pulse + hover magnification */}
+                  <span
+                    className="relative h-3.5 w-3.5 rounded-full bg-primary animate-step-glow transition-all duration-300 ease-out group-hover:scale-125 group-hover:ring-4 group-hover:ring-primary/30 group-hover:shadow-[0_0_14px_rgba(233,88,40,0.6)]"
+                    style={{ animationDelay: `${i * 1000}ms` }}
+                  />
                 </div>
                 <p className="eyebrow transition-colors duration-300 group-hover:text-primary">Step 0{i + 1}</p>
-                <h3 className="mt-2 text-2xl transition-colors duration-300 group-hover:text-primary">{s.t}</h3>
-                <p className="mt-2 leading-relaxed text-muted-foreground">{s.d}</p>
+                <h3 className="mt-2 text-2xl font-semibold transition-colors duration-300 group-hover:text-primary">{s.t}</h3>
+                <p className="mt-2 leading-relaxed text-muted-foreground text-sm md:text-base">{s.d}</p>
               </Reveal>
             </li>
           ))}
@@ -600,8 +652,17 @@ function HowItWorks() {
 // ==================== SECTION: DONATION STANDARDS ====================
 
 function DonationStandards() {
+  const handleSupportClick = (supportType: string, e: React.MouseEvent) => {
+    scrollToSection("enquiry-form", e);
+    window.dispatchEvent(
+      new CustomEvent("select-smile-home", {
+        detail: { supportType },
+      })
+    );
+  };
+
   return (
-    <section id="standards" className="pt-12 pb-10 lg:pt-14 lg:pb-12 bg-muted/10 border-t border-border/50">
+    <section id="standards" className="pt-12 pb-14 lg:pt-14 lg:pb-16 bg-muted/10 border-t border-border/50">
       <div className="mx-auto max-w-7xl px-5 lg:px-8">
         <Reveal className="max-w-3xl">
           <p className="eyebrow">Donation Standards</p>
@@ -613,36 +674,80 @@ function DonationStandards() {
 
         <div className="mt-10 grid gap-8 md:grid-cols-3">
           {/* Column 1: New Clothing Only */}
-          <Reveal delay={0}>
-            <div className="flex h-full flex-col rounded-2xl border bg-card p-6 md:p-8 shadow-xs">
-              <div className="inline-flex h-12 w-12 items-center justify-center rounded-xl bg-primary/10 text-primary">
-                <Shirt className="h-6 w-6" />
+          <Reveal delay={0} className="h-full">
+            <div className="group relative flex h-full flex-col overflow-hidden rounded-2xl border border-border bg-card p-6 md:p-8 shadow-xs transition-all duration-300 ease-out hover:-translate-y-2 hover:border-primary/50 hover:shadow-2xl hover:shadow-primary/10 active:scale-[0.99]">
+              {/* Shimmer top gradient line - alive on all screens */}
+              <div className="absolute inset-x-0 top-0 h-1.5 bg-gradient-to-r from-transparent via-primary to-transparent opacity-80 lg:opacity-0 lg:group-hover:opacity-100 transition-opacity duration-300 animate-shimmer" />
+              {/* Ambient radial glow - alive on all screens */}
+              <div className="pointer-events-none absolute -right-16 -top-16 h-40 w-40 rounded-full bg-primary/15 blur-3xl opacity-60 lg:opacity-0 lg:group-hover:opacity-100 transition-opacity duration-500 animate-pulse-glow" />
+
+              {/* Floating Icon - organic float on mobile + hover bounce on desktop */}
+              <div className="relative inline-flex h-14 w-14 items-center justify-center rounded-2xl bg-primary/10 text-primary transition-all duration-300 animate-float group-hover:scale-110 group-hover:-rotate-3 group-hover:bg-primary group-hover:text-white group-hover:shadow-lg group-hover:shadow-primary/25">
+                <Shirt className="h-7 w-7 transition-transform duration-300 group-hover:scale-105" />
               </div>
-              <h3 className="mt-5 text-2xl font-semibold">New Clothing Only</h3>
+
+              <h3 className="mt-5 text-2xl font-bold tracking-tight text-foreground transition-colors duration-300 group-hover:text-primary">
+                New Clothing Only
+              </h3>
               <p className="mt-2 text-xs font-bold uppercase tracking-wider text-muted-foreground">Accepted Items</p>
-              <ul className="mt-3 space-y-2 text-sm text-foreground flex-1">
+
+              {/* Checklist with hover translate */}
+              <ul className="mt-4 space-y-2 text-sm text-foreground flex-1">
                 {["Men's dhotis", "Men's shirts", "Towels", "Women's sarees", "Blouse materials", "Nightwear"].map((item) => (
-                  <li key={item} className="flex items-center gap-2">
-                    <CheckCircle2 className="h-4 w-4 text-primary shrink-0" />
-                    <span>{item}</span>
+                  <li
+                    key={item}
+                    className="group/item flex items-center gap-2.5 rounded-lg px-2 py-1 -mx-2 transition-all duration-200 hover:bg-primary/5 hover:translate-x-1.5 active:bg-primary/5 cursor-default"
+                  >
+                    <span className="flex h-5 w-5 items-center justify-center rounded-full bg-primary/15 text-primary transition-all duration-200 group-hover/item:scale-110 group-hover/item:bg-primary group-hover/item:text-white shrink-0">
+                      <CheckCircle2 className="h-3.5 w-3.5" />
+                    </span>
+                    <span className="font-medium text-foreground/90 transition-colors group-hover/item:text-primary">{item}</span>
                   </li>
                 ))}
               </ul>
-              <div className="mt-6 rounded-lg bg-amber-500/10 border border-amber-500/20 p-3.5 text-xs text-amber-800 dark:text-amber-300">
-                <strong>Important Note:</strong> Only new clothing items are accepted. Used clothing is not accepted.
+
+              {/* Note Box */}
+              <div className="mt-6 rounded-xl bg-amber-500/10 border border-amber-500/20 p-3.5 text-xs text-amber-800 dark:text-amber-300 transition-all duration-300 group-hover:border-amber-500/40 group-hover:bg-amber-500/15">
+                <strong className="text-amber-900 dark:text-amber-200">Important Note:</strong> Only new clothing items are accepted. Used clothing is not accepted.
+              </div>
+
+              {/* Support CTA Button */}
+              <div className="mt-6 pt-4 border-t border-border/50">
+                <button
+                  type="button"
+                  onClick={(e) => handleSupportClick("New Clothing", e)}
+                  className="w-full inline-flex items-center justify-center gap-2 rounded-xl border border-primary/30 bg-primary/5 px-4 py-2.5 text-xs font-semibold text-primary transition-all duration-300 hover:bg-primary hover:text-white hover:shadow-md hover:shadow-primary/20 active:scale-95 cursor-pointer"
+                >
+                  <span>Support With Clothing</span>
+                  <ArrowRight className="h-3.5 w-3.5 transition-transform duration-300 animate-arrow-nudge group-hover:translate-x-1" />
+                </button>
               </div>
             </div>
           </Reveal>
 
           {/* Column 2: Essential Groceries */}
-          <Reveal delay={100}>
-            <div className="flex h-full flex-col rounded-2xl border bg-card p-6 md:p-8 shadow-xs">
-              <div className="inline-flex h-12 w-12 items-center justify-center rounded-xl bg-turquoise/10 text-turquoise">
-                <ShoppingBag className="h-6 w-6" />
+          <Reveal delay={100} className="h-full">
+            <div className="group relative flex h-full flex-col overflow-hidden rounded-2xl border border-border bg-card p-6 md:p-8 shadow-xs transition-all duration-300 ease-out hover:-translate-y-2 hover:border-turquoise/50 hover:shadow-2xl hover:shadow-turquoise/10 active:scale-[0.98]">
+              {/* Shimmer top gradient line - alive on all screens */}
+              <div className="absolute inset-x-0 top-0 h-1.5 bg-gradient-to-r from-transparent via-turquoise to-transparent opacity-90 transition-opacity duration-300 animate-shimmer" />
+              {/* Ambient radial glow - alive on all screens */}
+              <div className="pointer-events-none absolute -right-16 -top-16 h-40 w-40 rounded-full bg-turquoise/15 blur-3xl opacity-70 transition-opacity duration-500 animate-pulse-glow" />
+
+              {/* Floating Icon - organic float with stagger */}
+              <div
+                className="relative inline-flex h-14 w-14 items-center justify-center rounded-2xl bg-turquoise/10 text-turquoise ring-2 ring-turquoise/20 transition-all duration-300 animate-float group-hover:scale-110 group-hover:-rotate-3 group-hover:bg-turquoise group-hover:text-white group-hover:shadow-lg group-hover:shadow-turquoise/25"
+                style={{ animationDelay: "600ms" }}
+              >
+                <ShoppingBag className="h-7 w-7 transition-transform duration-300 group-hover:scale-105" />
               </div>
-              <h3 className="mt-5 text-2xl font-semibold">Essential Groceries</h3>
+
+              <h3 className="mt-5 text-2xl font-bold tracking-tight text-foreground transition-colors duration-300 group-hover:text-turquoise">
+                Essential Groceries
+              </h3>
               <p className="mt-2 text-xs font-bold uppercase tracking-wider text-muted-foreground">Suggested Items</p>
-              <ul className="mt-3 space-y-2 text-sm text-foreground flex-1">
+
+              {/* Checklist with hover translate */}
+              <ul className="mt-4 space-y-2 text-sm text-foreground flex-1">
                 {[
                   "Ponni rice or raw rice",
                   "Toor dal",
@@ -653,40 +758,92 @@ function DonationStandards() {
                   "Semolina",
                   "Wheat flour",
                 ].map((item) => (
-                  <li key={item} className="flex items-center gap-2">
-                    <CheckCircle2 className="h-4 w-4 text-turquoise shrink-0" />
-                    <span>{item}</span>
+                  <li
+                    key={item}
+                    className="group/item flex items-center gap-2.5 rounded-lg px-2 py-1 -mx-2 transition-all duration-200 hover:bg-turquoise/5 hover:translate-x-1.5 active:bg-turquoise/5 cursor-default"
+                  >
+                    <span className="flex h-5 w-5 items-center justify-center rounded-full bg-turquoise/15 text-turquoise transition-all duration-200 group-hover/item:scale-110 group-hover/item:bg-turquoise group-hover/item:text-white shrink-0">
+                      <CheckCircle2 className="h-3.5 w-3.5" />
+                    </span>
+                    <span className="font-medium text-foreground/90 transition-colors group-hover/item:text-turquoise">{item}</span>
                   </li>
                 ))}
               </ul>
-              <div className="mt-6 rounded-lg bg-amber-500/10 border border-amber-500/20 p-3.5 text-xs text-amber-800 dark:text-amber-300">
-                <strong>Important Note:</strong> Confirm the home's current requirements and any dietary restrictions before sending groceries.
+
+              {/* Note Box */}
+              <div className="mt-6 rounded-xl bg-amber-500/10 border border-amber-500/20 p-3.5 text-xs text-amber-800 dark:text-amber-300 transition-all duration-300 group-hover:border-amber-500/40 group-hover:bg-amber-500/15">
+                <strong className="text-amber-900 dark:text-amber-200">Important Note:</strong> Confirm the home's current requirements and any dietary restrictions before sending groceries.
+              </div>
+
+              {/* Support CTA Button */}
+              <div className="mt-6 pt-4 border-t border-border/50">
+                <button
+                  type="button"
+                  onClick={(e) => handleSupportClick("Essential Groceries", e)}
+                  className="w-full inline-flex items-center justify-center gap-2 rounded-xl border border-turquoise/30 bg-turquoise/5 px-4 py-2.5 text-xs font-semibold text-turquoise transition-all duration-300 hover:bg-turquoise hover:text-white hover:shadow-md hover:shadow-turquoise/20 active:scale-95 cursor-pointer"
+                >
+                  <span>Support With Groceries</span>
+                  <ArrowRight className="h-3.5 w-3.5 transition-transform duration-300 animate-arrow-nudge group-hover:translate-x-1" />
+                </button>
               </div>
             </div>
           </Reveal>
 
           {/* Column 3: Direct Financial Assistance */}
-          <Reveal delay={200}>
-            <div className="flex h-full flex-col rounded-2xl border bg-card p-6 md:p-8 shadow-xs">
-              <div className="inline-flex h-12 w-12 items-center justify-center rounded-xl bg-accent/20 text-accent">
-                <Building2 className="h-6 w-6" />
+          <Reveal delay={200} className="h-full">
+            <div className="group relative flex h-full flex-col overflow-hidden rounded-2xl border border-border bg-card p-6 md:p-8 shadow-xs transition-all duration-300 ease-out hover:-translate-y-2 hover:border-accent/60 hover:shadow-2xl hover:shadow-accent/15 active:scale-[0.98]">
+              {/* Shimmer top gradient line - alive on all screens */}
+              <div className="absolute inset-x-0 top-0 h-1.5 bg-gradient-to-r from-transparent via-accent to-transparent opacity-90 transition-opacity duration-300 animate-shimmer" />
+              {/* Ambient radial glow - alive on all screens */}
+              <div className="pointer-events-none absolute -right-16 -top-16 h-40 w-40 rounded-full bg-accent/20 blur-3xl opacity-70 transition-opacity duration-500 animate-pulse-glow" />
+
+              {/* Floating Icon - organic float with stagger */}
+              <div
+                className="relative inline-flex h-14 w-14 items-center justify-center rounded-2xl bg-accent/20 text-accent ring-2 ring-accent/30 transition-all duration-300 animate-float group-hover:scale-110 group-hover:-rotate-3 group-hover:bg-accent group-hover:text-accent-foreground group-hover:shadow-lg group-hover:shadow-accent/25"
+                style={{ animationDelay: "1200ms" }}
+              >
+                <Building2 className="h-7 w-7 transition-transform duration-300 group-hover:scale-105" />
               </div>
-              <h3 className="mt-5 text-2xl font-semibold">Direct Financial Assistance</h3>
+
+              <h3 className="mt-5 text-2xl font-bold tracking-tight text-foreground transition-colors duration-300 group-hover:text-foreground">
+                Direct Financial Assistance
+              </h3>
               <p className="mt-2 text-xs font-bold uppercase tracking-wider text-muted-foreground">Areas of Support</p>
-              <ul className="mt-3 space-y-2 text-sm text-foreground flex-1">
+
+              {/* Checklist with hover translate */}
+              <ul className="mt-4 space-y-2 text-sm text-foreground flex-1">
                 {[
                   "Food assistance",
                   "Medical assistance",
                   "Essential care expenses",
                 ].map((item) => (
-                  <li key={item} className="flex items-center gap-2">
-                    <CheckCircle2 className="h-4 w-4 text-accent shrink-0" />
-                    <span>{item}</span>
+                  <li
+                    key={item}
+                    className="group/item flex items-center gap-2.5 rounded-lg px-2 py-1 -mx-2 transition-all duration-200 hover:bg-accent/10 hover:translate-x-1.5 active:bg-accent/10 cursor-default"
+                  >
+                    <span className="flex h-5 w-5 items-center justify-center rounded-full bg-accent/20 text-accent transition-all duration-200 group-hover/item:scale-110 group-hover/item:bg-accent group-hover/item:text-accent-foreground shrink-0">
+                      <CheckCircle2 className="h-3.5 w-3.5" />
+                    </span>
+                    <span className="font-medium text-foreground/90 transition-colors group-hover/item:text-foreground">{item}</span>
                   </li>
                 ))}
               </ul>
-              <div className="mt-6 rounded-lg bg-amber-500/10 border border-amber-500/20 p-3.5 text-xs text-amber-800 dark:text-amber-300">
-                <strong>Important Note:</strong> Financial transfers must go directly to verified official trust accounts. Confirm the current requirement and recipient details before making a transfer.
+
+              {/* Note Box */}
+              <div className="mt-6 rounded-xl bg-amber-500/10 border border-amber-500/20 p-3.5 text-xs text-amber-800 dark:text-amber-300 transition-all duration-300 group-hover:border-amber-500/40 group-hover:bg-amber-500/15">
+                <strong className="text-amber-900 dark:text-amber-200">Important Note:</strong> Financial transfers must go directly to verified official trust accounts. Confirm the current requirement and recipient details before making a transfer.
+              </div>
+
+              {/* Support CTA Button */}
+              <div className="mt-6 pt-4 border-t border-border/50">
+                <button
+                  type="button"
+                  onClick={(e) => handleSupportClick("Financial Assistance", e)}
+                  className="w-full inline-flex items-center justify-center gap-2 rounded-xl border border-accent/40 bg-accent/10 px-4 py-2.5 text-xs font-semibold text-foreground transition-all duration-300 hover:bg-accent hover:text-accent-foreground hover:shadow-md active:scale-95 cursor-pointer"
+                >
+                  <span>Direct Financial Support</span>
+                  <ArrowRight className="h-3.5 w-3.5 transition-transform duration-300 animate-arrow-nudge group-hover:translate-x-1" />
+                </button>
               </div>
             </div>
           </Reveal>
@@ -737,12 +894,12 @@ function NewsEvents() {
         <div className="mt-10 grid gap-6 md:grid-cols-3 items-stretch">
           {news.map((item, i) => (
             <Reveal key={item.title} delay={i * 120} className="h-full">
-              <div className="group relative flex h-full flex-col justify-between overflow-hidden rounded-2xl border border-border/80 bg-gradient-to-b from-card via-card to-card/90 p-6 md:p-8 shadow-xs transition-all duration-500 hover:-translate-y-2 hover:border-primary/50 hover:shadow-2xl hover:shadow-primary/5 cursor-pointer">
-                {/* Top Animated Gradient Accent Bar */}
-                <div className="absolute top-0 inset-x-0 h-1 bg-gradient-to-r from-transparent via-primary to-transparent scale-x-0 group-hover:scale-x-100 transition-transform duration-500 ease-out" />
+              <div className="group relative flex h-full flex-col justify-between overflow-hidden rounded-2xl border border-border/80 bg-gradient-to-b from-card via-card to-card/90 p-6 md:p-8 shadow-xs transition-all duration-500 hover:-translate-y-2 hover:border-primary/50 hover:shadow-2xl hover:shadow-primary/5 active:scale-[0.98] cursor-pointer">
+                {/* Top Animated Gradient Accent Bar - alive with shimmer on all screens */}
+                <div className="absolute top-0 inset-x-0 h-1.5 bg-gradient-to-r from-transparent via-primary to-transparent animate-shimmer opacity-85 transition-all duration-500 ease-out" />
 
                 {/* Ambient Decorative Watermark Number */}
-                <span className="absolute -bottom-5 -right-2 text-8xl font-black font-display text-foreground/[0.03] select-none pointer-events-none group-hover:text-primary/[0.07] group-hover:scale-110 transition-all duration-500">
+                <span className="absolute -bottom-5 -right-2 text-8xl font-black font-display text-foreground/[0.04] select-none pointer-events-none group-hover:text-primary/[0.09] group-hover:scale-110 transition-all duration-500">
                   0{i + 1}
                 </span>
 
@@ -750,7 +907,7 @@ function NewsEvents() {
                   {/* Top Bar: Update No & Animated Beacon Status Badge */}
                   <div className="flex items-center justify-between gap-2">
                     <span className="flex items-center gap-1.5 text-xs text-muted-foreground font-semibold uppercase tracking-wider">
-                      <Newspaper className="h-4 w-4 text-primary transition-transform duration-300 group-hover:rotate-12 group-hover:scale-110" />
+                      <Newspaper className="h-4 w-4 text-primary transition-transform duration-300 group-hover:rotate-12 group-hover:scale-110 animate-float" style={{ animationDelay: `${i * 800}ms` }} />
                       Update 0{i + 1}
                     </span>
                     <span className={`inline-flex items-center gap-1.5 rounded-full px-2.5 py-1 text-xs font-semibold border transition-all duration-300 group-hover:shadow-xs ${item.statusClass}`}>
@@ -782,12 +939,12 @@ function NewsEvents() {
                   </p>
                 </div>
 
-                {/* Footer with Sliding Arrow Micro-interaction */}
+                {/* Footer with Visible Arrow Micro-interaction on All Devices */}
                 <div className="relative z-10 mt-6 pt-4 border-t border-border/60 flex items-center justify-between text-xs text-muted-foreground transition-colors group-hover:text-foreground">
                   <span className="font-medium">Official Initiative Release</span>
-                  <div className="flex items-center gap-1 text-primary font-semibold text-xs opacity-0 -translate-x-2 group-hover:opacity-100 group-hover:translate-x-0 transition-all duration-300">
+                  <div className="flex items-center gap-1 text-primary font-semibold text-xs transition-all duration-300 group-hover:translate-x-1">
                     <span>Read</span>
-                    <ArrowRight className="h-3.5 w-3.5 transition-transform duration-300 group-hover:translate-x-0.5" />
+                    <ArrowRight className="h-3.5 w-3.5 transition-transform duration-300 animate-arrow-nudge group-hover:translate-x-0.5" />
                   </div>
                 </div>
               </div>
@@ -1018,8 +1175,8 @@ function Gallery() {
                     setActive(idx);
                   }}
                   className={`h-11 w-15 shrink-0 rounded-lg overflow-hidden border-2 transition-all cursor-pointer ${active === idx
-                      ? "border-primary scale-105 shadow-md opacity-100"
-                      : "border-transparent opacity-40 hover:opacity-90"
+                    ? "border-primary scale-105 shadow-md opacity-100"
+                    : "border-transparent opacity-40 hover:opacity-90"
                     }`}
                 >
                   <img src={g.src} alt="" className="h-full w-full object-cover" />
@@ -1064,22 +1221,24 @@ function Contact() {
 
   useEffect(() => {
     const handleSelect = (e: Event) => {
-      const customEvent = e as CustomEvent<{ city: string; ngo: string }>;
+      const customEvent = e as CustomEvent<{ city?: string; ngo?: string; supportType?: string }>;
       if (customEvent.detail) {
         setV((prev) => ({
           ...prev,
-          district: customEvent.detail.city,
-          ngo: customEvent.detail.ngo,
+          ...(customEvent.detail.city ? { district: customEvent.detail.city } : {}),
+          ...(customEvent.detail.ngo ? { ngo: customEvent.detail.ngo } : {}),
+          ...(customEvent.detail.supportType ? { support_type: customEvent.detail.supportType } : {}),
         }));
-        clearError("district");
-        clearError("ngo");
+        if (customEvent.detail.city) clearError("district");
+        if (customEvent.detail.ngo) clearError("ngo");
+        if (customEvent.detail.supportType) clearError("support_type");
       }
     };
     window.addEventListener("select-smile-home", handleSelect);
     return () => window.removeEventListener("select-smile-home", handleSelect);
   }, []);
 
-  const selectedHome = getSmileHomeDetails(v.ngo);
+  const selectedHome = getSmileHomeDetails(v.ngo, v.district);
 
   const clearError = (k: keyof EnquiryInput) => {
     setErrors((prev) => {
@@ -1117,7 +1276,6 @@ function Contact() {
     lines.push(`City / District: ${v.district}`);
     lines.push(`SMILE Care Home: ${v.ngo}`);
     if (selectedHome) {
-      lines.push(`Home Address: ${selectedHome.address}`);
       lines.push(`Home Contact: +91 ${selectedHome.phone}`);
     }
     lines.push(`Support Type: ${v.support_type}`);
@@ -1188,7 +1346,6 @@ function Contact() {
               { i: Building2, k: "Coordinating Organisation", val: "Tamil Nadu Federation of Voluntary Agencies (TAFVA)" },
               { i: Phone, k: "WhatsApp / Helpdesk", val: "+91 91504 08850", href: `https://wa.me/${WHATSAPP_NUMBER}` },
               { i: Mail, k: "Email", val: "elderscare@trueseva.org", href: "mailto:elderscare@trueseva.org" },
-              { i: MapPin, k: "Office Address", val: "[Official state office address to be provided]" },
             ].map((c) => (
               <div key={c.k} className="flex gap-4">
                 <c.i className="mt-1 h-5 w-5 shrink-0 text-turquoise" aria-hidden />
@@ -1201,7 +1358,16 @@ function Contact() {
           </div>
         </Reveal>
         <Reveal className="lg:col-span-7" delay={100}>
-          <form noValidate onSubmit={submit} className="space-y-5 rounded-xl border bg-card p-6 md:p-10 shadow-sm">
+          <form id="enquiry-form" noValidate onSubmit={submit} className="scroll-mt-24 space-y-5 rounded-xl border bg-card p-6 md:p-10 shadow-sm transition-all focus-within:ring-2 focus-within:ring-primary/20">
+            {/* Form Title & Context Badge for Mobile Clarity */}
+            <div className="border-b border-border/60 pb-3">
+              <span className="eyebrow">Direct Assistance</span>
+              <h3 className="text-xl md:text-2xl font-bold text-foreground">Support Enquiry Form</h3>
+              <p className="mt-1 text-xs text-muted-foreground">
+                Submit your details to coordinate transparent, direct support with verified elderly homes.
+              </p>
+            </div>
+
             <div className="grid gap-5 md:grid-cols-2">
               <Field id="full_name" label="Full Name" required error={errors.full_name}>
                 <input {...a("full_name")} className={inputCls} value={v.full_name} onChange={set("full_name")} maxLength={100} autoComplete="name" placeholder="Your Name" />
@@ -1284,9 +1450,9 @@ function Contact() {
                     {selectedHome.city}
                   </span>
                 </div>
-                <p className="text-muted-foreground flex items-start gap-1.5">
-                  <MapPin className="h-3.5 w-3.5 text-primary shrink-0 mt-0.5" />
-                  <span>{selectedHome.address}</span>
+                <p className="text-muted-foreground flex items-center gap-1.5 text-xs">
+                  <MapPin className="h-3.5 w-3.5 text-primary shrink-0" />
+                  <span>{selectedHome.label.replace(selectedHome.name + " – ", "")}</span>
                 </p>
                 <div className="flex flex-wrap gap-x-5 gap-y-1 text-muted-foreground pt-1.5 border-t border-primary/15">
                   <a href={`tel:${selectedHome.phone}`} className="flex items-center gap-1 hover:text-primary font-medium">

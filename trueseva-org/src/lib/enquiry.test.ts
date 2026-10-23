@@ -1,5 +1,5 @@
 import { describe, it, expect } from "vitest";
-import { normaliseMobile, validateEnquiry } from "./enquiry";
+import { normaliseMobile, validateEnquiry, getSmileHomeDetails, getNgosForDistrict } from "./enquiry";
 
 describe("enquiry rules", () => {
   it("accepts +91 mobile numbers", () => expect(normaliseMobile("+91 94123 45678")).toBe("9412345678"));
@@ -54,5 +54,17 @@ describe("enquiry rules", () => {
       message: "Hello there",
     });
     expect(validAmount).toEqual({});
+  });
+
+  it("resolves Coimbatore homes to Coimbatore and never Madurai", () => {
+    const cbeNgos = getNgosForDistrict("Coimbatore");
+    expect(cbeNgos.length).toBe(3);
+
+    for (const ngo of cbeNgos) {
+      const home = getSmileHomeDetails(ngo, "Coimbatore");
+      expect(home).toBeDefined();
+      expect(home?.city).toBe("Coimbatore");
+      expect(home?.phone).toBe("9150408850");
+    }
   });
 });

@@ -17,6 +17,8 @@ export interface SmileHome {
   email: string;
 }
 
+export const CENTRAL_PHONE = "9150408850";
+
 export const SMILE_HOMES: SmileHome[] = [
   {
     id: 1,
@@ -25,7 +27,7 @@ export const SMILE_HOMES: SmileHome[] = [
     name: "AMK SMILE Oldage Home",
     label: "AMK SMILE Oldage Home – Melapalayam, Tirunelveli",
     address: "Melapalayam, Tirunelveli – 627 005",
-    phone: "7598796444",
+    phone: CENTRAL_PHONE,
     email: "amkcentre@gmail.com",
   },
   {
@@ -35,7 +37,7 @@ export const SMILE_HOMES: SmileHome[] = [
     name: "AMK SMILE Oldage Home",
     label: "AMK SMILE Oldage Home – Paramarthalingapuram, Kanyakumari",
     address: "No.114, Amirtha School Road, Paramarthalingapuram, Kanyakumari – 629 702",
-    phone: "7598797444",
+    phone: CENTRAL_PHONE,
     email: "amkcentre@gmail.com",
   },
   {
@@ -45,7 +47,7 @@ export const SMILE_HOMES: SmileHome[] = [
     name: "Brindavanam SMILE Oldage Home",
     label: "Brindavanam SMILE Oldage Home – Near Municipality, Tiruchendur",
     address: "Near Tiruchendur Municipality, Tiruchendur",
-    phone: "7598548444",
+    phone: CENTRAL_PHONE,
     email: "brindavanamtrust70@gmail.com",
   },
   {
@@ -55,7 +57,7 @@ export const SMILE_HOMES: SmileHome[] = [
     name: "Brindavanam SMILE Oldage Home",
     label: "Brindavanam SMILE Oldage Home – Near Municipality, Rameswaram",
     address: "Near Rameswaram Municipality, Rameswaram",
-    phone: "7598528444",
+    phone: CENTRAL_PHONE,
     email: "brindavanamtrust70@gmail.com",
   },
   {
@@ -65,7 +67,7 @@ export const SMILE_HOMES: SmileHome[] = [
     name: "Brindavanam SMILE Oldage Home",
     label: "Brindavanam SMILE Oldage Home – Panchu Pettai, Oli Muhammed Salai",
     address: "Kanchipuram, Panchu Pettai, Oli Muhammed Salai, Kanchipuram",
-    phone: "7598547444",
+    phone: CENTRAL_PHONE,
     email: "brindavanamtrust70@gmail.com",
   },
   {
@@ -75,7 +77,7 @@ export const SMILE_HOMES: SmileHome[] = [
     name: "Rojavanam SMILE Oldage Home",
     label: "Rojavanam SMILE Oldage Home – Uthankudi (No.1, Melur Road)",
     address: "No.1, Melur Road, Uthankudi, Madurai – 625 107",
-    phone: "7598437444",
+    phone: CENTRAL_PHONE,
     email: "rojavanam.trust123@gmail.com",
   },
   {
@@ -85,7 +87,7 @@ export const SMILE_HOMES: SmileHome[] = [
     name: "Rojavanam SMILE Oldage Home",
     label: "Rojavanam SMILE Oldage Home – Shenoy Nagar (Jagajeevan Ram St)",
     address: "Jagajeevan Ram Street, Shenoy Nagar, Madurai – 625 020",
-    phone: "7598357444",
+    phone: CENTRAL_PHONE,
     email: "rojavanam.trust123@gmail.com",
   },
   {
@@ -95,7 +97,7 @@ export const SMILE_HOMES: SmileHome[] = [
     name: "Rojavanam SMILE Oldage Home",
     label: "Rojavanam SMILE Oldage Home – Keeraithurai / Chinthamani",
     address: "Rani Ponnammal Road, Keeraithurai, Chinthamani Main Road, Madurai – 625 009",
-    phone: "7598438444",
+    phone: CENTRAL_PHONE,
     email: "rojavanam.trust123@gmail.com",
   },
   {
@@ -105,7 +107,7 @@ export const SMILE_HOMES: SmileHome[] = [
     name: "Rojavanam SMILE Oldage Home",
     label: "Rojavanam SMILE Oldage Home – Chimmakal (Hanumarkovil Padithurai Rd)",
     address: "Sandhana Mariamman Kovil Street, Hanumarkovil Padithurai Road, Chimmakal – 625 001",
-    phone: "7598358444",
+    phone: CENTRAL_PHONE,
     email: "rojavanam.trust123@gmail.com",
   },
   {
@@ -115,7 +117,7 @@ export const SMILE_HOMES: SmileHome[] = [
     name: "Rojavanam SMILE Oldage Home",
     label: "Rojavanam SMILE Oldage Home – Rajaj Road (Opp. Amman Petrol Bunk)",
     address: "Rajaj Road, Amman Petrol Bunk Opposite, Palani – 624 601",
-    phone: "7598795444",
+    phone: CENTRAL_PHONE,
     email: "rojavanam.trust123@gmail.com",
   },
   {
@@ -125,7 +127,7 @@ export const SMILE_HOMES: SmileHome[] = [
     name: "Rojavanam SMILE Oldage Home",
     label: "Rojavanam SMILE Oldage Home – Thudiyalur (Cheron Colony)",
     address: "CVPV Nagar, Cheron Colony, Thudiyalur, Coimbatore – 641 034",
-    phone: "7598547444",
+    phone: CENTRAL_PHONE,
     email: "rojavanam.trust123@gmail.com",
   },
   {
@@ -135,7 +137,7 @@ export const SMILE_HOMES: SmileHome[] = [
     name: "Rojavanam SMILE Oldage Home",
     label: "Rojavanam SMILE Oldage Home – Ondipudur (Nesavalar Colony, Pattanam Rd)",
     address: "Nesavalar colony, Pattanam Road, Ondipudur – 641 016",
-    phone: "7598548444",
+    phone: CENTRAL_PHONE,
     email: "rojavanam.trust123@gmail.com",
   },
   {
@@ -145,7 +147,7 @@ export const SMILE_HOMES: SmileHome[] = [
     name: "Rojavanam SMILE Oldage Home",
     label: "Rojavanam SMILE Oldage Home – Peelamedu (North Zone, Mullai Nagar)",
     address: "North Zone, Mullai Nagar, Peelamedu, Coimbatore – 641 004",
-    phone: "7598791444",
+    phone: CENTRAL_PHONE,
     email: "rojavanam.trust123@gmail.com",
   },
   {
@@ -155,7 +157,7 @@ export const SMILE_HOMES: SmileHome[] = [
     name: "Rojavanam SMILE Oldage Home",
     label: "Rojavanam SMILE Oldage Home – E.B. Road (Near Murugan Theatre)",
     address: "E.B. Road, Near Murugan Theature, Tiruchirappalli – 620 008",
-    phone: "7598388444",
+    phone: CENTRAL_PHONE,
     email: "rojavanam.trust123@gmail.com",
   },
   {
@@ -165,7 +167,7 @@ export const SMILE_HOMES: SmileHome[] = [
     name: "Rojavanam Oldage Home",
     label: "Rojavanam Oldage Home – Vellalar Colony, Nagercoil",
     address: "No.41, Vellalar Colony, Nagercoil – 629 001",
-    phone: "9444861356",
+    phone: CENTRAL_PHONE,
     email: "rojavanam.trust123@gmail.com",
   },
   {
@@ -175,7 +177,7 @@ export const SMILE_HOMES: SmileHome[] = [
     name: "Rojavanam Oldage Home",
     label: "Rojavanam Oldage Home – Courtallam (Five Falls Road)",
     address: "No.1, Near Boat House, Five Falls Road, Courtallam, Tenkasi – 627 802",
-    phone: "9487168888",
+    phone: CENTRAL_PHONE,
     email: "rojavanam.trust123@gmail.com",
   },
 ];
@@ -250,11 +252,59 @@ export function getNgosForDistrict(district: string): string[] {
   return DISTRICT_NGOS[normalizedKey] || DISTRICT_NGOS[district] || [];
 }
 
-export function getSmileHomeDetails(ngoLabelOrName: string): SmileHome | undefined {
+function cleanText(str: string): string {
+  return (str || "")
+    .replace(/[\u2010-\u2015\u2212]/g, "-")
+    .replace(/\s+/g, " ")
+    .trim()
+    .toLowerCase();
+}
+
+export function getSmileHomeDetails(ngoLabelOrName: string, district?: string): SmileHome | undefined {
   if (!ngoLabelOrName) return undefined;
-  return SMILE_HOMES.find(
-    (h) => h.label === ngoLabelOrName || h.name === ngoLabelOrName || ngoLabelOrName.includes(h.address.split(",")[0])
-  );
+  const target = cleanText(ngoLabelOrName);
+
+  // If district is supplied, restrict lookup to homes in that district first!
+  const districtPool = district
+    ? SMILE_HOMES.filter((h) => {
+        const dNorm = (TN_DISTRICT_ALIASES[district] || district).toLowerCase();
+        return h.city.toLowerCase() === district.toLowerCase() || h.city.toLowerCase() === dNorm;
+      })
+    : [];
+
+  const searchPool = districtPool.length > 0 ? districtPool : SMILE_HOMES;
+
+  // 1. Strict exact match on label within the district
+  const exact = searchPool.find((h) => cleanText(h.label) === target);
+  if (exact) return exact;
+
+  // 2. Strict exact match on label across all homes
+  const exactGlobal = SMILE_HOMES.find((h) => cleanText(h.label) === target);
+  if (exactGlobal) return exactGlobal;
+
+  // 3. Match within district pool by branch identifier
+  if (districtPool.length > 0) {
+    const branchMatch = districtPool.find((h) => {
+      const branchOnly = cleanText(h.label.replace(h.name, ""));
+      return branchOnly && (target.includes(branchOnly) || branchOnly.includes(target));
+    });
+    if (branchMatch) return branchMatch;
+
+    // If only 1 home in this district, return it
+    if (districtPool.length === 1) return districtPool[0];
+  }
+
+  // 4. Strict match on name within district pool
+  if (districtPool.length > 0) {
+    const nameMatch = districtPool.find((h) => cleanText(h.name) === target);
+    if (nameMatch) return nameMatch;
+  }
+
+  // 5. Global fallback if exact match on name and only 1 home shares that name
+  const nameMatches = SMILE_HOMES.filter((h) => cleanText(h.name) === target);
+  if (nameMatches.length === 1) return nameMatches[0];
+
+  return undefined;
 }
 
 export type EnquiryInput = {

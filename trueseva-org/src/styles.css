@@ -105,3 +105,70 @@
   from { opacity: 0; transform: translateY(16px); }
   to { opacity: 1; transform: none; }
 }
+
+@keyframes float {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-5px); }
+}
+
+@keyframes pulseGlow {
+  0%, 100% { opacity: 0.35; transform: scale(1); }
+  50% { opacity: 0.75; transform: scale(1.08); }
+}
+
+@keyframes shimmerFlow {
+  0% { background-position: -200% 0; }
+  100% { background-position: 200% 0; }
+}
+
+@utility animate-float {
+  animation: float 3.5s ease-in-out infinite;
+}
+
+@utility animate-pulse-glow {
+  animation: pulseGlow 4s ease-in-out infinite;
+}
+
+@utility animate-shimmer {
+  background-size: 200% auto;
+  animation: shimmerFlow 3.5s linear infinite;
+}
+
+@keyframes stepPulseRadar {
+  0%, 100% {
+    transform: scale(1);
+    opacity: 0.15;
+  }
+  50% {
+    transform: scale(2.6);
+    opacity: 0.45;
+  }
+}
+
+@keyframes stepCoreGlow {
+  0%, 100% {
+    box-shadow: 0 0 0 0 rgba(233, 88, 40, 0.4);
+    transform: scale(1);
+  }
+  50% {
+    box-shadow: 0 0 14px 4px rgba(233, 88, 40, 0.55);
+    transform: scale(1.2);
+  }
+}
+
+@keyframes arrowNudge {
+  0%, 100% { transform: translateX(0); }
+  50% { transform: translateX(3px); }
+}
+
+@utility animate-step-radar {
+  animation: stepPulseRadar 4s ease-in-out infinite;
+}
+
+@utility animate-step-glow {
+  animation: stepCoreGlow 4s ease-in-out infinite;
+}
+
+@utility animate-arrow-nudge {
+  animation: arrowNudge 2s ease-in-out infinite;
+}
