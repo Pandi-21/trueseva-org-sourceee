@@ -69,12 +69,12 @@ export async function handleWhatsAppApiRoute(request: Request): Promise<Response
         id: enquiryId,
         full_name: data.full_name || "",
         mobile: data.mobile || "",
-        email: data.email,
+        ...(data.email ? { email: data.email } : {}),
         district: data.district || "",
         ngo: data.ngo || "",
         support_type: data.support_type || "",
-        amount: data.amount,
-        message: data.message,
+        ...(data.amount ? { amount: data.amount } : {}),
+        ...(data.message ? { message: data.message } : {}),
       };
 
       const { userResult } = await sendEnquiryWhatsAppNotifications(payload);
@@ -99,13 +99,11 @@ export async function handleWhatsAppApiRoute(request: Request): Promise<Response
 
   // 1. Health & Configuration Status Check
   if (url.pathname === "/api/whatsapp/status" && request.method === "GET") {
-    const hasToken = Boolean(
-      (process.env.ASKEVA_API_KEY || process.env.WHATSAPP_TOKEN) &&
-      (process.env.ASKEVA_API_KEY || process.env.WHATSAPP_TOKEN)!.trim() !== ""
-    );
-    const adminPhone = process.env.ASKEVA_SENDER_PHONE || process.env.WHATSAPP_ADMIN_PHONE || "919150408850";
-    const templateName = process.env.ASKEVA_TEMPLATE_NAME || process.env.WHATSAPP_TEMPLATE_NAME || "trueseva_thank_you";
-    const delayHours = process.env.WHATSAPP_RECEIPT_DELAY_HOURS || "1";
+    const askEvaKey = process.env["ASKEVA_API_KEY"] || process.env["WHATSAPP_TOKEN"];
+    const hasToken = Boolean(askEvaKey && askEvaKey.trim() !== "");
+    const adminPhone = process.env["ASKEVA_SENDER_PHONE"] || process.env["WHATSAPP_ADMIN_PHONE"] || "919150408850";
+    const templateName = process.env["ASKEVA_TEMPLATE_NAME"] || process.env["WHATSAPP_TEMPLATE_NAME"] || "trueseva_thank_you";
+    const delayHours = process.env["WHATSAPP_RECEIPT_DELAY_HOURS"] || "1";
 
     return new Response(
       JSON.stringify({
@@ -125,8 +123,8 @@ export async function handleWhatsAppApiRoute(request: Request): Promise<Response
   if (url.pathname === "/api/whatsapp/test" && request.method === "POST") {
     try {
       const body = (await request.json().catch(() => ({}))) as { to?: string; message?: string };
-      const targetPhone = body.to || process.env.WHATSAPP_ADMIN_PHONE || "919150408850";
-      const templateName = process.env.WHATSAPP_TEMPLATE_NAME || "hello_world";
+      const targetPhone = body.to || process.env["WHATSAPP_ADMIN_PHONE"] || "919150408850";
+      const templateName = process.env["WHATSAPP_TEMPLATE_NAME"] || "hello_world";
 
       // Try sending template first
       const templateResult = await sendWhatsAppTemplate(targetPhone, templateName);
@@ -181,20 +179,20 @@ export async function handleWhatsAppApiRoute(request: Request): Promise<Response
       const results = [];
       for (const item of enquiries || []) {
         // Parse details from stored message
-        const homeMatch = item.message.match(/\[SMILE Home: (.*?)\]/);
-        const amountMatch = item.message.match(/\[Amount: (.*?)\]/);
-        const ngo = homeMatch ? homeMatch[1] : "SMILE Care Home";
+        const homeMatch = item.message?.match(/\[SMILE Home: (.*?)\]/);
+        const amountMatch = item.message?.match(/\[Amount: (.*?)\]/);
+        const ngo = homeMatch ? homeMatch[1] : (item.district ? `${item.district} Care Home` : "SMILE Care Home");
         const amount = amountMatch ? amountMatch[1] : undefined;
 
         const payload: WhatsAppEnquiryPayload = {
           id: item.id,
           full_name: item.full_name,
           mobile: item.mobile,
-          email: item.email,
-          district: item.district,
-          ngo,
-          support_type: item.support_type,
-          amount,
+          ...(item.email ? { email: item.email } : {}),
+          district: item.district || "Tamil Nadu",
+          ngo: ngo || "SMILE Care Home",
+          support_type: item.support_type || "Elderly Care Support",
+          ...(amount ? { amount } : {}),
         };
 
         const res = await sendReceiptToUser(payload);

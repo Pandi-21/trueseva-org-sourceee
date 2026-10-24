@@ -1207,8 +1207,8 @@ function Gallery() {
           >
             <div className="relative overflow-hidden rounded-2xl bg-black/50 shadow-2xl max-h-[72vh] flex items-center justify-center border border-white/10">
               <img
-                src={GALLERY[active].src}
-                alt={GALLERY[active].label}
+                src={GALLERY[active]?.src}
+                alt={GALLERY[active]?.label || "Fieldwork photo"}
                 className="max-h-[72vh] w-auto max-w-full object-contain select-none"
               />
             </div>

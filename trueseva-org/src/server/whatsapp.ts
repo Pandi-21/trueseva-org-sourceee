@@ -109,10 +109,12 @@ export async function sendWhatsAppMessage(payload: Record<string, unknown>): Pro
 
       if (response.ok) {
         console.log(`[AskEva] Message dispatched successfully:`, data);
-        const messageId = String(
-          data.messageId || data.id || (data.messages as Array<{ id?: string }> | undefined)?.[0]?.id || `msg-${Date.now()}`
-        );
-        return { success: true, messageId, details: data };
+        const msgId =
+          (typeof data["messageId"] === "string" ? data["messageId"] : undefined) ||
+          (typeof data["id"] === "string" ? data["id"] : undefined) ||
+          (Array.isArray(data["messages"]) && data["messages"][0]?.id ? String(data["messages"][0].id) : undefined) ||
+          `msg-${Date.now()}`;
+        return { success: true, messageId: msgId, details: data };
       } else {
         lastError = `AskEva HTTP ${response.status}: ${JSON.stringify(data)}`;
         console.warn(`[AskEva] ${endpoint} returned error:`, data);
@@ -139,7 +141,8 @@ export async function sendWhatsAppMessage(payload: Record<string, unknown>): Pro
       const data = (await response.json().catch(() => ({}))) as Record<string, unknown>;
 
       if (response.ok) {
-        const messageId = (data.messages as Array<{ id: string }> | undefined)?.[0]?.id;
+        const msgArr = data["messages"] as Array<{ id?: string }> | undefined;
+        const messageId = msgArr?.[0]?.id || `meta-${Date.now()}`;
         return { success: true, messageId, details: data };
       }
     } catch (err) {
@@ -350,7 +353,10 @@ export async function sendReceiptToUser(enquiry: WhatsAppEnquiryPayload): Promis
 
   const receiptTemplate = getEnv("WHATSAPP_RECEIPT_TEMPLATE_NAME") || getEnv("ASKEVA_RECEIPT_TEMPLATE");
   const refCode = enquiry.id ? `TS-${enquiry.id.slice(0, 8).toUpperCase()}` : "TS-1082";
-  const pdfUrl = getEnv("RECEIPT_PDF_URL", "https://trueseva.org/TrueSeva_Sample_Receipt.pdf");
+  const pdfUrl = getEnv(
+    "RECEIPT_PDF_URL",
+    "https://cdn.jsdelivr.net/gh/Pandi-21/trueseva-org-sourceee@main/trueseva-org/public/TrueSeva_Sample_Receipt.pdf",
+  );
 
   // 1. Try sending via FILE template if approved (trueseva_receipt)
   if (receiptTemplate && receiptTemplate.trim() !== "") {
