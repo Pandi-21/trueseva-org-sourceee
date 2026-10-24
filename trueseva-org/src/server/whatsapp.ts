@@ -353,10 +353,26 @@ export async function sendReceiptToUser(enquiry: WhatsAppEnquiryPayload): Promis
 
   const receiptTemplate = getEnv("WHATSAPP_RECEIPT_TEMPLATE_NAME") || getEnv("ASKEVA_RECEIPT_TEMPLATE");
   const refCode = enquiry.id ? `TS-${enquiry.id.slice(0, 8).toUpperCase()}` : "TS-1082";
-  const pdfUrl = getEnv(
-    "RECEIPT_PDF_URL",
-    "https://cdn.jsdelivr.net/gh/Pandi-21/trueseva-org-sourceee@main/trueseva-org/public/TrueSeva_Sample_Receipt.pdf",
-  );
+  const siteUrl = getEnv("PUBLIC_SITE_URL") || getEnv("NEXT_PUBLIC_SITE_URL") || getEnv("SITE_URL");
+  let pdfUrl = getEnv("RECEIPT_PDF_URL");
+
+  // If a live public site URL is configured, build a 100% dynamic personalized PDF receipt URL
+  if (!pdfUrl && siteUrl && siteUrl.startsWith("http") && !siteUrl.includes("localhost")) {
+    const params = new URLSearchParams({
+      ref: refCode,
+      name: enquiry.full_name || "Supporter",
+      mobile: enquiry.mobile || "",
+      ngo: enquiry.ngo || "Elderly Care Home",
+      dist: enquiry.district || "Tamil Nadu",
+      supp: enquiry.support_type || "Elderly Care Support",
+    });
+    pdfUrl = `${siteUrl.replace(/\/$/, "")}/api/whatsapp/receipt.pdf?${params.toString()}`;
+  }
+
+  if (!pdfUrl) {
+    pdfUrl =
+      "https://cdn.jsdelivr.net/gh/Pandi-21/trueseva-org-sourceee@main/trueseva-org/public/TrueSeva_Sample_Receipt.pdf";
+  }
 
   // 1. Try sending via FILE template if approved (trueseva_receipt)
   if (receiptTemplate && receiptTemplate.trim() !== "") {

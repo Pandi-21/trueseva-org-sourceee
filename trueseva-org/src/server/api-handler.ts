@@ -25,6 +25,39 @@ export async function handleWhatsAppApiRoute(request: Request): Promise<Response
     return new Response(null, { status: 204, headers: jsonHeaders });
   }
 
+  // Dynamic Receipt PDF Generator Endpoint (Produces on-the-fly personalized PDF for WhatsApp & download)
+  if (url.pathname === "/api/whatsapp/receipt.pdf" || url.pathname.endsWith("/TrueSeva_Receipt.pdf")) {
+    try {
+      const { createReceiptPdf } = await import("./receipt-pdf");
+      const ref = url.searchParams.get("ref") || "TS-1082";
+      const fullName = url.searchParams.get("name") || "Supporter";
+      const mobile = url.searchParams.get("mobile") || "";
+      const ngo = url.searchParams.get("ngo") || "Elderly Care Home";
+      const district = url.searchParams.get("dist") || "Tamil Nadu";
+      const supportType = url.searchParams.get("supp") || "Elderly Care Support";
+
+      const pdfBuffer = createReceiptPdf({
+        ref,
+        fullName,
+        mobile,
+        ngo,
+        district,
+        supportType,
+      });
+
+      return new Response(new Uint8Array(pdfBuffer), {
+        status: 200,
+        headers: {
+          "content-type": "application/pdf",
+          "content-disposition": `inline; filename="TrueSeva_Receipt_${ref}.pdf"`,
+          "cache-control": "public, max-age=86400",
+        },
+      });
+    } catch (err) {
+      return new Response("Error generating receipt PDF", { status: 500 });
+    }
+  }
+
   // 1. Submit Enquiry & Trigger Automated WhatsApp (Called from frontend form)
   if (url.pathname === "/api/whatsapp/submit" && request.method === "POST") {
     try {
