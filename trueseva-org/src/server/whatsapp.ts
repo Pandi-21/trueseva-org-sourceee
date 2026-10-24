@@ -354,8 +354,13 @@ export async function sendEnquiryWhatsAppNotifications(enquiry: WhatsAppEnquiryP
     userResult = await sendWhatsAppText(enquiry.mobile, welcomeText);
   }
 
-  // Schedule delayed receipt (1-2 hours later)
-  scheduleDelayedReceipt(enquiry);
+  // 3. Immediately dispatch the official personalized PDF receipt
+  try {
+    const receiptRes = await sendReceiptToUser(enquiry);
+    console.log(`[WhatsApp / AskEva] Immediate PDF receipt result:`, receiptRes.success);
+  } catch (err) {
+    console.warn(`[WhatsApp / AskEva] Immediate PDF receipt warning:`, err);
+  }
 
   return { adminResult, userResult };
 }
@@ -364,9 +369,12 @@ export async function sendEnquiryWhatsAppNotifications(enquiry: WhatsAppEnquiryP
  * Send the PDF receipt to the user's WhatsApp via AskEva
  */
 export async function sendReceiptToUser(enquiry: WhatsAppEnquiryPayload): Promise<WhatsAppSendResult> {
-  console.log(`[WhatsApp / AskEva] Dispatching 1-minute receipt to: ${enquiry.full_name} (+91 ${enquiry.mobile})`);
+  console.log(`[WhatsApp / AskEva] Dispatching PDF receipt to: ${enquiry.full_name} (+91 ${enquiry.mobile})`);
 
-  const receiptTemplate = getEnv("WHATSAPP_RECEIPT_TEMPLATE_NAME") || getEnv("ASKEVA_RECEIPT_TEMPLATE");
+  const receiptTemplate =
+    getEnv("WHATSAPP_RECEIPT_TEMPLATE_NAME") ||
+    getEnv("ASKEVA_RECEIPT_TEMPLATE") ||
+    "trueseva_receipt";
   const refCode = enquiry.id ? `TS-${enquiry.id.slice(0, 8).toUpperCase()}` : "TS-1082";
   const siteUrl = getEnv("PUBLIC_SITE_URL") || getEnv("NEXT_PUBLIC_SITE_URL") || getEnv("SITE_URL");
   let pdfUrl = getEnv("RECEIPT_PDF_URL");
