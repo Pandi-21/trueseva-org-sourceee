@@ -164,6 +164,11 @@ export function ContactForm() {
         manualWaUrl: waUrl,
       });
       setV(EMPTY);
+
+      // Auto-open WhatsApp chat with client so the enquiry message is sent directly
+      if (typeof window !== "undefined") {
+        window.open(waUrl, "_blank");
+      }
     } catch (err) {
       console.error("Server enquiry submission error:", err);
       // Fallback: direct Supabase insert
@@ -185,6 +190,11 @@ export function ContactForm() {
         manualWaUrl: waUrl,
       });
       setV(EMPTY);
+
+      // Auto-open WhatsApp chat with client fallback
+      if (typeof window !== "undefined") {
+        window.open(waUrl, "_blank");
+      }
     }
   }
 
