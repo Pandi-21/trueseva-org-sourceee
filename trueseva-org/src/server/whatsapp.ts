@@ -491,7 +491,7 @@ export async function scheduleDelayedReceipt(enquiry: WhatsAppEnquiryPayload): P
 
       const qstashData = (await qstashRes.json().catch(() => ({}))) as Record<string, unknown>;
       if (qstashRes.ok) {
-        console.log(`[QStash] 1-hour delayed receipt successfully scheduled! Message ID:`, qstashData.messageId);
+        console.log(`[QStash] 1-hour delayed receipt successfully scheduled! Message ID:`, qstashData["messageId"]);
         return;
       } else {
         console.warn(`[QStash] Scheduling returned non-OK status:`, qstashData);
