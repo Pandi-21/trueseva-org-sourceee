@@ -5,10 +5,11 @@ import {
   Building2, Loader2, CheckCircle2, AlertCircle, ImageIcon,
   ChevronDown, ChevronUp, Users, ShoppingBag, Clock, FileText,
   AlertTriangle, Newspaper, ArrowRight, Info, Sparkles,
-  ChevronLeft, ChevronRight, Maximize2
+  ChevronLeft, ChevronRight, Maximize2, QrCode, Copy, Check, ExternalLink
 } from "lucide-react";
 import hero from "@/assets/image12.jpeg";
 import bannerImg from "@/assets/banners.png";
+import qrCodeImg from "@/assets/rojavanam-qr.jpg";
 import about from "@/assets/image13.jpeg";
 import logo from "@/assets/logo.png";
 import img1 from "@/assets/image1.jpeg";
@@ -1278,6 +1279,8 @@ function Contact() {
   const [errors, setErrors] = useState<Partial<Record<keyof EnquiryInput, string>>>({});
   const [status, setStatus] = useState<"idle" | "loading" | "success" | "error">("idle");
   const [feedback, setFeedback] = useState<{ notice?: string; manualWaUrl?: string }>({});
+  const [copiedUpi, setCopiedUpi] = useState(false);
+  const [showQrModal, setShowQrModal] = useState(false);
 
   useEffect(() => {
     const handleSelect = (e: Event) => {
@@ -1601,6 +1604,133 @@ function Contact() {
               )}
             </div>
 
+            {/* Direct Official Trust QR Code & UPI Payment Card (Visible whenever Financial Assistance is selected) */}
+            {v.support_type === "Financial Assistance" && (
+              <div className="rounded-2xl border border-amber-500/30 bg-gradient-to-br from-amber-50/90 via-orange-50/40 to-background p-5 md:p-6 dark:from-amber-950/30 dark:via-orange-950/15 dark:to-background dark:border-amber-500/25 shadow-sm animate-in fade-in slide-in-from-top-3 duration-300">
+                <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-2.5 pb-4 border-b border-amber-200/70 dark:border-amber-800/40">
+                  <div className="flex items-center gap-2.5">
+                    <div className="flex h-9 w-9 items-center justify-center rounded-xl bg-gradient-to-br from-amber-500 to-orange-600 text-white shadow-xs shrink-0">
+                      <QrCode className="h-5 w-5" />
+                    </div>
+                    <div>
+                      <h4 className="text-base font-bold text-foreground flex flex-wrap items-center gap-2">
+                        <span>Direct Financial Support via UPI</span>
+                        <span className="inline-flex items-center gap-1 rounded-full bg-emerald-500/10 px-2 py-0.5 text-[11px] font-semibold text-emerald-700 dark:text-emerald-400 border border-emerald-500/20">
+                          <ShieldCheck className="h-3 w-3" /> 100% Verified Trust
+                        </span>
+                      </h4>
+                      <p className="text-xs text-muted-foreground mt-0.5">
+                        {selectedHome ? `Supporting: ${selectedHome.name} (${selectedHome.city})` : "Official Trust Account for Verified Elders Care"}
+                      </p>
+                    </div>
+                  </div>
+                  <span className="text-[11px] font-semibold text-amber-900/90 dark:text-amber-200 bg-amber-100/90 dark:bg-amber-900/50 px-2.5 py-1 rounded-md border border-amber-300/60 dark:border-amber-700/50">
+                    ICICI Bank · eazypay
+                  </span>
+                </div>
+
+                <div className="mt-5 grid md:grid-cols-12 gap-6 items-center">
+                  {/* Left: Scan QR Image */}
+                  <div className="md:col-span-5 flex flex-col items-center">
+                    <div
+                      onClick={() => setShowQrModal(true)}
+                      className="group relative cursor-pointer overflow-hidden rounded-2xl border-2 border-amber-400/80 dark:border-amber-600/80 bg-white p-2.5 shadow-md transition-all hover:shadow-xl hover:scale-[1.02]"
+                      title="Click to view full size QR code"
+                    >
+                      <img
+                        src={qrCodeImg}
+                        alt="ICICI eazypay QR Code - M/S ROJAVANAM (ROJAVANAMTRUST@icici)"
+                        className="w-52 h-auto max-w-full rounded-xl object-contain select-none"
+                      />
+                      <div className="absolute inset-0 flex items-center justify-center bg-black/40 opacity-0 group-hover:opacity-100 transition-opacity rounded-xl">
+                        <span className="inline-flex items-center gap-1.5 rounded-full bg-white/95 px-3 py-1.5 text-xs font-semibold text-stone-900 shadow">
+                          <Maximize2 className="h-3.5 w-3.5" /> Tap to Enlarge
+                        </span>
+                      </div>
+                    </div>
+                    <p className="mt-2 text-[11px] font-medium text-muted-foreground flex items-center gap-1">
+                      <Sparkles className="h-3 w-3 text-amber-600" /> Tap QR to view full screen
+                    </p>
+                  </div>
+
+                  {/* Right: Payment Details & Instant Actions */}
+                  <div className="md:col-span-7 space-y-3.5">
+                    <div className="rounded-xl border border-border/80 bg-background/95 p-3.5 space-y-2">
+                      <div className="flex items-center justify-between text-xs">
+                        <span className="text-muted-foreground font-medium">Beneficiary / Merchant Name</span>
+                        <span className="font-bold text-foreground">M/S.ROJAVANAM</span>
+                      </div>
+                      <div className="flex items-center justify-between text-xs pt-1.5 border-t border-border/50">
+                        <span className="text-muted-foreground font-medium">Official UPI ID (VPA)</span>
+                        <span className="font-mono font-bold text-primary text-sm select-all">ROJAVANAMTRUST@icici</span>
+                      </div>
+                      <div className="flex items-center justify-between text-xs pt-1.5 border-t border-border/50">
+                        <span className="text-muted-foreground font-medium">Banking Partner</span>
+                        <span className="font-semibold text-foreground">ICICI Bank eazypay</span>
+                      </div>
+                      <div className="flex items-center justify-between text-xs pt-1.5 border-t border-border/50">
+                        <span className="text-muted-foreground font-medium">Accepted Apps</span>
+                        <span className="text-muted-foreground text-[11px]">GPay, PhonePe, Paytm, BHIM, iMobile</span>
+                      </div>
+                    </div>
+
+                    {/* Action Buttons */}
+                    <div className="flex flex-wrap items-center gap-2.5">
+                      <button
+                        type="button"
+                        onClick={() => {
+                          if (typeof navigator !== "undefined" && navigator.clipboard) {
+                            navigator.clipboard.writeText("ROJAVANAMTRUST@icici");
+                            setCopiedUpi(true);
+                            setTimeout(() => setCopiedUpi(false), 2500);
+                          }
+                        }}
+                        className="inline-flex items-center gap-1.5 rounded-lg border border-primary/30 bg-primary/10 px-3.5 py-2 text-xs font-semibold text-primary transition-all hover:bg-primary/20 cursor-pointer"
+                      >
+                        {copiedUpi ? (
+                          <>
+                            <Check className="h-3.5 w-3.5 text-emerald-600" />
+                            <span>UPI ID Copied!</span>
+                          </>
+                        ) : (
+                          <>
+                            <Copy className="h-3.5 w-3.5" />
+                            <span>Copy UPI ID</span>
+                          </>
+                        )}
+                      </button>
+
+                      {/* Open in UPI App Link */}
+                      <a
+                        href={`upi://pay?pa=ROJAVANAMTRUST@icici&pn=M%2FS%20ROJAVANAM&cu=INR${v.amount ? `&am=${v.amount}` : ""}&tn=${encodeURIComponent(`TrueSeva Support - ${selectedHome?.name || "Elders Care"}`)}`}
+                        className="inline-flex items-center gap-1.5 rounded-lg bg-emerald-600 hover:bg-emerald-700 px-3.5 py-2 text-xs font-semibold text-white shadow-xs transition-all cursor-pointer"
+                      >
+                        <ExternalLink className="h-3.5 w-3.5" />
+                        <span>Pay via UPI App</span>
+                      </a>
+                    </div>
+
+                    {/* Simple Instructions */}
+                    <div className="text-[12px] leading-relaxed text-muted-foreground space-y-1 rounded-lg bg-amber-500/5 p-3 border border-amber-500/15">
+                      <p className="font-semibold text-foreground flex items-center gap-1.5 text-xs">
+                        <Info className="h-3.5 w-3.5 text-amber-600 shrink-0" />
+                        <span>Direct Support Guidelines:</span>
+                      </p>
+                      <p>
+                        1. Scan the QR code or pay via any UPI app with the amount ({v.amount ? `₹${Number(v.amount).toLocaleString("en-IN")}` : "entered above"}).
+                      </p>
+                      <p>
+                        2. All donations for verified homes are received into this audited trust account with zero commissions.
+                      </p>
+                      <p>
+                        3. Submit this form below to receive your official verified acknowledgement receipt on WhatsApp!
+                      </p>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            )}
+
             <Field id="message" label="Message or Enquiry" required error={errors.message}>
               <textarea {...a("message")} rows={4} className={inputCls} value={v.message} onChange={set("message")} maxLength={2000} placeholder="Provide clothing sizes, food preferences, or specific queries..." />
             </Field>
@@ -1665,6 +1795,71 @@ function Contact() {
             </button>
           </form>
         </Reveal>
+
+        {/* Full Size QR Code Dialog Modal */}
+        {showQrModal && (
+          <div
+            className="fixed inset-0 z-50 flex items-center justify-center bg-black/80 p-4 backdrop-blur-xs animate-in fade-in duration-200"
+            onClick={() => setShowQrModal(false)}
+          >
+            <div
+              className="relative max-w-sm w-full rounded-2xl bg-white p-5 shadow-2xl text-stone-900 animate-in zoom-in-95 duration-200"
+              onClick={(e) => e.stopPropagation()}
+            >
+              <button
+                type="button"
+                onClick={() => setShowQrModal(false)}
+                className="absolute top-3 right-3 rounded-full bg-stone-100 p-1.5 text-stone-600 hover:bg-stone-200 cursor-pointer"
+                aria-label="Close modal"
+              >
+                <X className="h-5 w-5" />
+              </button>
+              <div className="text-center mb-3 pr-6">
+                <h3 className="font-bold text-base text-stone-900">Scan to Pay via UPI</h3>
+                <p className="text-xs text-stone-600 font-mono">M/S.ROJAVANAM · ROJAVANAMTRUST@icici</p>
+              </div>
+              <div className="overflow-hidden rounded-xl border border-stone-200 bg-stone-50 p-2">
+                <img
+                  src={qrCodeImg}
+                  alt="ICICI eazypay QR Code Full View"
+                  className="w-full h-auto rounded-lg object-contain select-none"
+                />
+              </div>
+              <div className="mt-4 flex flex-col gap-2">
+                <button
+                  type="button"
+                  onClick={() => {
+                    if (typeof navigator !== "undefined" && navigator.clipboard) {
+                      navigator.clipboard.writeText("ROJAVANAMTRUST@icici");
+                      setCopiedUpi(true);
+                      setTimeout(() => setCopiedUpi(false), 2500);
+                    }
+                  }}
+                  className="w-full rounded-lg bg-primary hover:bg-primary/90 text-white font-semibold py-2.5 text-xs transition cursor-pointer flex items-center justify-center gap-1.5"
+                >
+                  {copiedUpi ? (
+                    <>
+                      <Check className="h-4 w-4 text-white" />
+                      <span>UPI ID Copied!</span>
+                    </>
+                  ) : (
+                    <>
+                      <Copy className="h-4 w-4" />
+                      <span>Copy ROJAVANAMTRUST@icici</span>
+                    </>
+                  )}
+                </button>
+                <button
+                  type="button"
+                  onClick={() => setShowQrModal(false)}
+                  className="w-full rounded-lg border border-stone-300 py-2 text-xs font-semibold text-stone-700 hover:bg-stone-100 transition cursor-pointer"
+                >
+                  Close
+                </button>
+              </div>
+            </div>
+          </div>
+        )}
       </div>
     </section>
   );
