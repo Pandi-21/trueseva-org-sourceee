@@ -49,7 +49,7 @@ import { handleWhatsAppApiRoute } from "./server/api-handler";
 export default {
   async fetch(request: Request, env: unknown, ctx: unknown) {
     try {
-      const apiResponse = await handleWhatsAppApiRoute(request);
+      const apiResponse = await handleWhatsAppApiRoute(request, env);
       if (apiResponse) {
         return apiResponse;
       }

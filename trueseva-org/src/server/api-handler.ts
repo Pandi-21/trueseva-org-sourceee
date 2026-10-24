@@ -4,10 +4,15 @@ import {
   sendReceiptToUser,
   sendEnquiryWhatsAppNotifications,
   type WhatsAppEnquiryPayload,
+  getEnv,
+  setRuntimeEnv,
 } from "./whatsapp";
 import { supabase } from "@/integrations/supabase/client";
 
-export async function handleWhatsAppApiRoute(request: Request): Promise<Response | null> {
+export async function handleWhatsAppApiRoute(request: Request, serverEnv?: unknown): Promise<Response | null> {
+  if (serverEnv) {
+    setRuntimeEnv(serverEnv);
+  }
   const url = new URL(request.url);
 
   if (!url.pathname.startsWith("/api/whatsapp")) {
@@ -132,11 +137,11 @@ export async function handleWhatsAppApiRoute(request: Request): Promise<Response
 
   // 1. Health & Configuration Status Check
   if (url.pathname === "/api/whatsapp/status" && request.method === "GET") {
-    const askEvaKey = process.env["ASKEVA_API_KEY"] || process.env["WHATSAPP_TOKEN"];
+    const askEvaKey = getEnv("ASKEVA_API_KEY") || getEnv("WHATSAPP_TOKEN");
     const hasToken = Boolean(askEvaKey && askEvaKey.trim() !== "");
-    const adminPhone = process.env["ASKEVA_SENDER_PHONE"] || process.env["WHATSAPP_ADMIN_PHONE"] || "919150408850";
-    const templateName = process.env["ASKEVA_TEMPLATE_NAME"] || process.env["WHATSAPP_TEMPLATE_NAME"] || "trueseva_thank_you";
-    const delayHours = process.env["WHATSAPP_RECEIPT_DELAY_HOURS"] || "1";
+    const adminPhone = getEnv("ASKEVA_SENDER_PHONE") || getEnv("WHATSAPP_ADMIN_PHONE") || "919150408850";
+    const templateName = getEnv("ASKEVA_TEMPLATE_NAME") || getEnv("WHATSAPP_TEMPLATE_NAME") || "trueseva_thank_you";
+    const delayHours = getEnv("WHATSAPP_RECEIPT_DELAY_HOURS") || "1";
 
     return new Response(
       JSON.stringify({
@@ -156,8 +161,8 @@ export async function handleWhatsAppApiRoute(request: Request): Promise<Response
   if (url.pathname === "/api/whatsapp/test" && request.method === "POST") {
     try {
       const body = (await request.json().catch(() => ({}))) as { to?: string; message?: string };
-      const targetPhone = body.to || process.env["WHATSAPP_ADMIN_PHONE"] || "919150408850";
-      const templateName = process.env["WHATSAPP_TEMPLATE_NAME"] || "hello_world";
+      const targetPhone = body.to || getEnv("WHATSAPP_ADMIN_PHONE") || "919150408850";
+      const templateName = getEnv("WHATSAPP_TEMPLATE_NAME") || "hello_world";
 
       // Try sending template first
       const templateResult = await sendWhatsAppTemplate(targetPhone, templateName);

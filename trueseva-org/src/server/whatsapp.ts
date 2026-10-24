@@ -49,7 +49,22 @@ function readEnvFile(): Record<string, string> {
   return {};
 }
 
-function getEnv(key: string, fallback = ""): string {
+let runtimeEnv: Record<string, string> = {};
+
+export function setRuntimeEnv(env: unknown): void {
+  if (env && typeof env === "object") {
+    for (const [k, v] of Object.entries(env as Record<string, unknown>)) {
+      if (typeof v === "string") {
+        runtimeEnv[k] = v;
+      }
+    }
+  }
+}
+
+export function getEnv(key: string, fallback = ""): string {
+  if (runtimeEnv[key]) {
+    return runtimeEnv[key];
+  }
   if (typeof process !== "undefined" && process.env && process.env[key]) {
     return process.env[key]!;
   }
