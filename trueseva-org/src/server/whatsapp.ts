@@ -354,13 +354,8 @@ export async function sendEnquiryWhatsAppNotifications(enquiry: WhatsAppEnquiryP
     userResult = await sendWhatsAppText(enquiry.mobile, welcomeText);
   }
 
-  // 3. Immediately dispatch the official personalized PDF receipt
-  try {
-    const receiptRes = await sendReceiptToUser(enquiry);
-    console.log(`[WhatsApp / AskEva] Immediate PDF receipt result:`, receiptRes.success);
-  } catch (err) {
-    console.warn(`[WhatsApp / AskEva] Immediate PDF receipt warning:`, err);
-  }
+  // 3. Schedule official PDF receipt to be sent exactly 1 hour later (via Upstash QStash)
+  await scheduleDelayedReceipt(enquiry);
 
   return { adminResult, userResult };
 }
@@ -458,42 +453,52 @@ export async function sendReceiptToUser(enquiry: WhatsAppEnquiryPayload): Promis
 const scheduledReceipts = new Set<string>();
 
 /**
- * Schedule delayed receipt sending (defaults to 1 minute for fast live testing)
+ * Schedule delayed receipt sending (defaults to 1 hour via Upstash QStash)
  */
-export function scheduleDelayedReceipt(enquiry: WhatsAppEnquiryPayload): void {
-  // Support minutes, seconds, or hours
-  const delaySecEnv = getEnv("WHATSAPP_RECEIPT_DELAY_SECONDS");
-  const delayMinEnv = getEnv("WHATSAPP_RECEIPT_DELAY_MINUTES", "1");
-  const delayHoursEnv = getEnv("WHATSAPP_RECEIPT_DELAY_HOURS");
+export async function scheduleDelayedReceipt(enquiry: WhatsAppEnquiryPayload): Promise<void> {
+  const qstashToken = getEnv("QSTASH_TOKEN");
+  const qstashUrl = getEnv("QSTASH_URL", "https://qstash-eu-central-1.upstash.io");
+  const siteUrl = getEnv("PUBLIC_SITE_URL", "https://trueseva-org.vercel.app");
+  const delayHoursStr = getEnv("WHATSAPP_RECEIPT_DELAY_HOURS", "1");
+  const delaySec = Math.max(30, Math.round(parseFloat(delayHoursStr) * 3600));
 
-  let delayMs = 60_000; // Default: exactly 1 minute (60 seconds)
+  if (qstashToken && qstashToken.trim() !== "") {
+    const destination = `${siteUrl.replace(/\/$/, "")}/api/whatsapp/delayed-receipt`;
+    const publishUrl = `${qstashUrl.replace(/\/$/, "")}/v2/publish/${destination}`;
 
-  if (delaySecEnv) {
-    delayMs = Math.max(5_000, parseFloat(delaySecEnv) * 1000);
-  } else if (delayHoursEnv && delayHoursEnv !== "1" && delayHoursEnv !== "0.0167") {
-    delayMs = Math.max(10_000, parseFloat(delayHoursEnv) * 60 * 60 * 1000);
-  } else if (delayMinEnv) {
-    delayMs = Math.max(10_000, parseFloat(delayMinEnv) * 60 * 1000);
+    console.log(`[QStash] Scheduling 1-hour delayed receipt for ${enquiry.full_name} (${delaySec}s) -> ${destination}`);
+
+    try {
+      const qstashRes = await fetch(publishUrl, {
+        method: "POST",
+        headers: {
+          Authorization: `Bearer ${qstashToken.trim()}`,
+          "Content-Type": "application/json",
+          "Upstash-Delay": `${delaySec}s`,
+        },
+        body: JSON.stringify(enquiry),
+      });
+
+      const qstashData = (await qstashRes.json().catch(() => ({}))) as Record<string, unknown>;
+      if (qstashRes.ok) {
+        console.log(`[QStash] 1-hour delayed receipt successfully scheduled! Message ID:`, qstashData.messageId);
+        return;
+      } else {
+        console.warn(`[QStash] Scheduling returned non-OK status:`, qstashData);
+      }
+    } catch (err) {
+      console.error(`[QStash] Error scheduling delayed receipt:`, err);
+    }
   }
 
-  const receiptKey = `${enquiry.mobile}_${enquiry.full_name}_${enquiry.support_type}`;
-  if (scheduledReceipts.has(receiptKey)) {
-    console.log(`[WhatsApp] Receipt already scheduled for ${receiptKey}, skipping duplicate timer.`);
-    return;
-  }
-  scheduledReceipts.add(receiptKey);
-
-  console.log(
-    `[WhatsApp / AskEva] Receipt scheduled for ${enquiry.full_name} in ${Math.round(delayMs / 1000)}s (approx ${Math.round(delayMs / 60000)} min)...`,
-  );
-
+  // Fallback in-memory timer (for local testing)
+  const delayMs = Math.min(delaySec * 1000, 60_000);
+  console.log(`[WhatsApp / Fallback Timer] Receipt scheduled in ${Math.round(delayMs / 1000)}s...`);
   const timer = setTimeout(async () => {
     try {
       await sendReceiptToUser(enquiry);
     } catch (err) {
-      console.error("[WhatsApp] Error sending scheduled receipt:", err);
-    } finally {
-      scheduledReceipts.delete(receiptKey);
+      console.error("[WhatsApp] Error sending fallback scheduled receipt:", err);
     }
   }, delayMs);
 

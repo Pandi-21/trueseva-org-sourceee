@@ -203,7 +203,34 @@ export async function handleWhatsAppApiRoute(request: Request, serverEnv?: unkno
     }
   }
 
-  // 3. Process Pending Receipts (Can be triggered by Vercel Cron or QStash)
+  // 3. Exact 1-Hour Delayed Receipt Callback (Invoked by Upstash QStash)
+  if (url.pathname === "/api/whatsapp/delayed-receipt" && request.method === "POST") {
+    try {
+      const payload = (await request.json().catch(() => ({}))) as WhatsAppEnquiryPayload;
+      console.log(`[QStash Webhook] 1-hour delay timer triggered for: ${payload.full_name} (${payload.mobile})`);
+
+      if (!payload.mobile) {
+        return new Response(JSON.stringify({ success: false, error: "Missing mobile in payload" }), {
+          status: 400,
+          headers: jsonHeaders,
+        });
+      }
+
+      const receiptResult = await sendReceiptToUser(payload);
+      return new Response(JSON.stringify({ success: true, receiptResult }), {
+        status: 200,
+        headers: jsonHeaders,
+      });
+    } catch (err) {
+      console.error("[QStash Webhook Error]:", err);
+      return new Response(
+        JSON.stringify({ success: false, error: err instanceof Error ? err.message : String(err) }),
+        { status: 500, headers: jsonHeaders },
+      );
+    }
+  }
+
+  // 4. Process Pending Receipts (Can be triggered by Vercel Cron or QStash)
   if (url.pathname === "/api/whatsapp/process-receipts" && (request.method === "POST" || request.method === "GET")) {
     try {
       const { data: enquiries, error } = await supabase
