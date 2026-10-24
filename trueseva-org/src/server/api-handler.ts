@@ -99,18 +99,20 @@ export async function handleWhatsAppApiRoute(request: Request): Promise<Response
 
   // 1. Health & Configuration Status Check
   if (url.pathname === "/api/whatsapp/status" && request.method === "GET") {
-    const hasToken = Boolean(process.env.WHATSAPP_TOKEN && process.env.WHATSAPP_TOKEN.trim() !== "");
-    const hasPhoneId = Boolean(process.env.WHATSAPP_PHONE_NUMBER_ID && process.env.WHATSAPP_PHONE_NUMBER_ID.trim() !== "");
-    const adminPhone = process.env.WHATSAPP_ADMIN_PHONE || "919150408850";
-    const templateName = process.env.WHATSAPP_TEMPLATE_NAME || "hello_world";
+    const hasToken = Boolean(
+      (process.env.ASKEVA_API_KEY || process.env.WHATSAPP_TOKEN) &&
+      (process.env.ASKEVA_API_KEY || process.env.WHATSAPP_TOKEN)!.trim() !== ""
+    );
+    const adminPhone = process.env.ASKEVA_SENDER_PHONE || process.env.WHATSAPP_ADMIN_PHONE || "919150408850";
+    const templateName = process.env.ASKEVA_TEMPLATE_NAME || process.env.WHATSAPP_TEMPLATE_NAME || "trueseva_thank_you";
     const delayHours = process.env.WHATSAPP_RECEIPT_DELAY_HOURS || "1";
 
     return new Response(
       JSON.stringify({
         status: "ok",
-        configured: hasToken && hasPhoneId,
+        provider: "askeva",
+        configured: hasToken,
         hasToken,
-        hasPhoneId,
         adminPhone,
         templateName,
         receiptDelayHours: delayHours,

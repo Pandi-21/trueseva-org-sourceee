@@ -8,6 +8,7 @@ import {
   ChevronLeft, ChevronRight, Maximize2
 } from "lucide-react";
 import hero from "@/assets/image12.jpeg";
+import bannerImg from "@/assets/banners.png";
 import about from "@/assets/image13.jpeg";
 import logo from "@/assets/logo.png";
 import img1 from "@/assets/image1.jpeg";
@@ -45,12 +46,14 @@ export const Route = createFileRoute("/")({
       { rel: "shortcut icon", type: "image/png", href: "/logo.png" },
     ],
     meta: [
-      { title: "TrueSeva — Support Elderly Care Homes in Tamil Nadu | TAFVA Verified Direct Assistance" },
-      { name: "description", content: "Support 10 verified elderly care homes across 10 districts of Tamil Nadu directly. 100% transparent clothing, grocery & medical assistance with zero commission, field-verified by TAFVA." },
-      { property: "og:title", content: "TrueSeva — Support Elderly Care Homes in Tamil Nadu | TAFVA Verified" },
-      { property: "og:description", content: "Direct clothing, grocery and medical support for 10 elderly care homes identified through TAFVA fieldwork across Tamil Nadu." },
+      { title: "TrueSeva — Light Up Lives of the Destitute This Diwali | Verified Homes in Tamil Nadu" },
+      { name: "description", content: "This Diwali, light up the lives of the destitute. Find genuinely run destitute and elderly care homes in your district across Tamil Nadu. Direct monetary assistance or material support with zero intermediaries." },
+      { property: "og:title", content: "Light Up the Lives of the Destitute This Diwali | TrueSeva" },
+      { property: "og:description", content: "Find genuinely run destitute and elderly care homes in your district. Direct monetary or material support with zero commission, field-verified by TAFVA." },
+      { property: "og:image", content: bannerImg },
       { property: "og:type", content: "website" },
       { name: "twitter:card", content: "summary_large_image" },
+      { name: "twitter:image", content: bannerImg },
     ],
   }),
   component: Index,
@@ -108,7 +111,7 @@ function scrollToSection(id: string, e?: React.MouseEvent) {
   }
   const el = document.getElementById(id);
   if (el) {
-    const headerOffset = 85;
+    const headerOffset = 115;
     const rect = el.getBoundingClientRect();
     const scrollTop = window.pageYOffset || document.documentElement.scrollTop;
     const targetY = rect.top + scrollTop - headerOffset;
@@ -178,37 +181,58 @@ function Header() {
     return () => window.removeEventListener("scroll", f);
   }, []);
   return (
-    <header className={`fixed inset-x-0 top-0 z-40 transition-all duration-300 ${scrolled ? "border-b bg-background/90 py-3 backdrop-blur" : "py-5"}`}>
-      <div className="mx-auto flex max-w-7xl items-center justify-between px-5 lg:px-8">
-        <Brand />
-        <nav aria-label="Main" className="hidden items-center gap-7 lg:flex">
-          {NAV.map((n) => (
-            <a
-              key={n.id}
-              href={`#${n.id}`}
-              onClick={(e) => scrollToSection(n.id, e)}
-              className="text-sm font-medium text-foreground/80 transition-colors hover:text-primary cursor-pointer"
-            >
-              {n.label}
-            </a>
-          ))}
+    <header className="fixed inset-x-0 top-0 z-40">
+      {/* Top Diwali Campaign Announcement Banner */}
+      <div className="bg-gradient-to-r from-amber-700 via-primary to-amber-700 text-primary-foreground px-4 py-2 text-center text-xs md:text-sm font-medium shadow-xs">
+        <div className="mx-auto flex max-w-7xl items-center justify-center gap-2 flex-wrap">
+          <span className="inline-flex items-center gap-1.5">
+            <span aria-hidden="true">🪔</span>
+            <span>
+              <strong>This Diwali:</strong> Light up the lives of the destitute! Find genuinely run care homes in your district &amp; support directly with monetary or material aid.
+            </span>
+          </span>
           <a
             href="#directory"
             onClick={(e) => scrollToSection("directory", e)}
-            className="rounded-full bg-primary px-5 py-2.5 text-sm font-semibold text-primary-foreground transition hover:opacity-90 cursor-pointer shadow-xs"
+            className="inline-flex items-center gap-1 font-bold underline underline-offset-4 hover:text-amber-200 transition-colors whitespace-nowrap cursor-pointer ml-1"
           >
-            Elderly Care
+            Find Homes &rarr;
           </a>
-        </nav>
-        <button
-          type="button"
-          className="lg:hidden p-2 text-foreground focus:outline-none focus:ring-2 focus:ring-primary/40 rounded-lg cursor-pointer"
-          aria-label={open ? "Close navigation menu" : "Open navigation menu"}
-          aria-expanded={open}
-          onClick={() => setOpen(!open)}
-        >
-          {open ? <X aria-hidden="true" className="h-6 w-6" /> : <Menu aria-hidden="true" className="h-6 w-6" />}
-        </button>
+        </div>
+      </div>
+
+      <div className={`transition-all duration-300 ${scrolled ? "border-b bg-background/95 py-2.5 backdrop-blur shadow-xs" : "bg-background/85 backdrop-blur-sm py-3.5"}`}>
+        <div className="mx-auto flex max-w-7xl items-center justify-between px-5 lg:px-8">
+          <Brand />
+          <nav aria-label="Main" className="hidden items-center gap-7 lg:flex">
+            {NAV.map((n) => (
+              <a
+                key={n.id}
+                href={`#${n.id}`}
+                onClick={(e) => scrollToSection(n.id, e)}
+                className="text-sm font-medium text-foreground/80 transition-colors hover:text-primary cursor-pointer"
+              >
+                {n.label}
+              </a>
+            ))}
+            <a
+              href="#directory"
+              onClick={(e) => scrollToSection("directory", e)}
+              className="rounded-full bg-primary px-5 py-2.5 text-sm font-semibold text-primary-foreground transition hover:opacity-90 cursor-pointer shadow-xs"
+            >
+              Elderly Care
+            </a>
+          </nav>
+          <button
+            type="button"
+            className="lg:hidden p-2 text-foreground focus:outline-none focus:ring-2 focus:ring-primary/40 rounded-lg cursor-pointer"
+            aria-label={open ? "Close navigation menu" : "Open navigation menu"}
+            aria-expanded={open}
+            onClick={() => setOpen(!open)}
+          >
+            {open ? <X aria-hidden="true" className="h-6 w-6" /> : <Menu aria-hidden="true" className="h-6 w-6" />}
+          </button>
+        </div>
       </div>
       {open && (
         <nav aria-label="Mobile" className="border-t bg-background px-5 py-4 lg:hidden">
@@ -226,10 +250,10 @@ function Header() {
             </a>
           ))}
           <a
-            href="#how"
+            href="#directory"
             onClick={(e) => {
               setOpen(false);
-              scrollToSection("how", e);
+              scrollToSection("directory", e);
             }}
             className="mt-3 block rounded-full bg-primary py-3 text-center font-semibold text-primary-foreground cursor-pointer"
           >
@@ -243,30 +267,37 @@ function Header() {
 
 function Hero() {
   return (
-    <section id="home" className="relative overflow-hidden pt-28 lg:pt-32">
+    <section id="home" className="relative overflow-hidden pt-36 lg:pt-40">
       <div className="mx-auto grid max-w-7xl gap-10 px-5 pb-16 lg:grid-cols-12 lg:gap-12 lg:px-8 lg:pb-24">
-        <div className="rise lg:col-span-5 lg:pt-10">
-          {/* <p className="eyebrow">10 Districts · 10 Elderly Homes · Direct Support · No Intermediaries</p> */}
-          <h1 className="mt-6 text-4xl font-bold leading-[1.15] md:text-5xl lg:text-6xl text-foreground">
-            Bring a Smile to an <span className="text-primary">Elder&apos;s Face.</span>
+        <div className="rise lg:col-span-5 lg:pt-6">
+          <div className="inline-flex items-center gap-2 rounded-full border border-primary/25 bg-primary/10 px-3.5 py-1 text-xs font-semibold text-primary">
+            <span>🪔</span>
+            <span>Diwali Special Campaign · Verified Direct Support</span>
+          </div>
+          <h1 className="mt-5 text-4xl font-bold leading-[1.15] md:text-5xl lg:text-6xl text-foreground">
+            Light Up the Lives of the <span className="text-primary">Destitute This Diwali.</span> 🪔
           </h1>
           <p className="mt-6 max-w-lg text-lg leading-relaxed text-muted-foreground">
-            Provide new clothing, essential groceries, or direct medical and food assistance to 10 elderly care homes across 10 districts of Tamil Nadu, identified through the fieldwork of the Tamil Nadu Federation of Voluntary Agencies (TAFVA).
+            Find genuinely run destitute and elderly care homes in your district across Tamil Nadu. Support them directly with monetary assistance or material donations like new clothing and essential groceries—with 100% transparency and zero intermediaries.
           </p>
-          <div className="mt-9 flex flex-wrap items-center gap-6">
+          <p className="mt-4 text-base font-medium text-primary flex items-center gap-2">
+            <span aria-hidden="true">✨</span>
+            <span>This Diwali, even a small help from you will bring immense joy to their lives.</span>
+          </p>
+          <div className="mt-9 flex flex-wrap items-center gap-4">
+            <a
+              href="#directory"
+              onClick={(e) => scrollToSection("directory", e)}
+              className="rounded-full bg-primary px-7 py-3.5 font-semibold text-primary-foreground transition hover:opacity-90 cursor-pointer shadow-xs"
+            >
+              Find Homes in Your District
+            </a>
             <a
               href="#how"
               onClick={(e) => scrollToSection("how", e)}
-              className="rounded-full bg-primary px-7 py-3.5 font-semibold text-primary-foreground transition hover:opacity-90 cursor-pointer"
+              className="rounded-full border border-border bg-card px-6 py-3.5 font-semibold text-foreground transition hover:bg-muted cursor-pointer"
             >
-              Explore How to Help
-            </a>
-            <a
-              href="#about"
-              onClick={(e) => scrollToSection("about", e)}
-              className="font-semibold underline decoration-accent decoration-2 underline-offset-8 hover:text-primary cursor-pointer"
-            >
-              Our Initiative
+              How to Support
             </a>
           </div>
         </div>
@@ -283,6 +314,35 @@ function Hero() {
             />
           </div>
         </div>
+      </div>
+    </section>
+  );
+}
+
+function DiwaliBanner() {
+  return (
+    <section aria-label="Diwali Special Campaign Banner" className="pb-14 lg:pb-20">
+      <div className="mx-auto max-w-7xl px-5 lg:px-8">
+        <Reveal>
+          <div className="group relative overflow-hidden rounded-2xl md:rounded-3xl border border-primary/20 bg-card shadow-xl transition-all duration-300 hover:shadow-2xl">
+            <a
+              href="#directory"
+              onClick={(e) => scrollToSection("directory", e)}
+              className="block cursor-pointer focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2"
+              title="Click to find verified care homes in your district"
+            >
+              <img
+                src={bannerImg}
+                alt="இந்த தீபாவளியில் ஆதரவற்றோர் வாழ்வில் ஒளியேற்றுங்கள் - TrueSeva Diwali Campaign Banner"
+                width={1920}
+                height={1080}
+                loading="lazy"
+                decoding="async"
+                className="w-full h-auto object-cover transition-transform duration-500 group-hover:scale-[1.01]"
+              />
+            </a>
+          </div>
+        </Reveal>
       </div>
     </section>
   );
@@ -1841,6 +1901,7 @@ function Index() {
       <Header />
       <main>
         <Hero />
+        <DiwaliBanner />
         <About />
         <Vision />
         <ElderlyHomesDirectory />

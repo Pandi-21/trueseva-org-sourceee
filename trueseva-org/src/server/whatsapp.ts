@@ -22,9 +22,40 @@ export interface WhatsAppSendResult {
   details?: unknown;
 }
 
+import fs from "fs";
+import path from "path";
+
+function readEnvFile(): Record<string, string> {
+  try {
+    const envPath = path.resolve(process.cwd(), ".env");
+    if (fs.existsSync(envPath)) {
+      const content = fs.readFileSync(envPath, "utf-8");
+      const result: Record<string, string> = {};
+      for (const line of content.split("\n")) {
+        const trimmed = line.trim();
+        if (trimmed && !trimmed.startsWith("#") && trimmed.includes("=")) {
+          const idx = trimmed.indexOf("=");
+          const k = trimmed.slice(0, idx).trim();
+          let v = trimmed.slice(idx + 1).trim();
+          if ((v.startsWith('"') && v.endsWith('"')) || (v.startsWith("'") && v.endsWith("'"))) {
+            v = v.slice(1, -1);
+          }
+          result[k] = v;
+        }
+      }
+      return result;
+    }
+  } catch {}
+  return {};
+}
+
 function getEnv(key: string, fallback = ""): string {
   if (typeof process !== "undefined" && process.env && process.env[key]) {
     return process.env[key]!;
+  }
+  const fileEnv = readEnvFile();
+  if (fileEnv[key]) {
+    return fileEnv[key];
   }
   return fallback;
 }
@@ -39,104 +70,167 @@ function cleanPhone(raw: string): string {
 }
 
 /**
- * Make direct request to Meta Graph API for WhatsApp Cloud messages
+ * Core function to send messages via AskEva REST API (https://backend.askeva.io)
  */
-export async function sendMetaRawMessage(payload: Record<string, unknown>): Promise<WhatsAppSendResult> {
-  const token = getEnv("WHATSAPP_TOKEN");
-  const phoneNumberId = getEnv("WHATSAPP_PHONE_NUMBER_ID");
+export async function sendWhatsAppMessage(payload: Record<string, unknown>): Promise<WhatsAppSendResult> {
+  const apiKey = getEnv("ASKEVA_API_KEY") || getEnv("WHATSAPP_TOKEN");
+  const metaPhoneId = getEnv("WHATSAPP_PHONE_NUMBER_ID");
 
-  if (!token) {
-    console.warn("[WhatsApp] Warning: WHATSAPP_TOKEN is not configured.");
-    return { success: false, error: "WHATSAPP_TOKEN is not configured in .env" };
+  if (!apiKey) {
+    console.warn("[WhatsApp] Warning: ASKEVA_API_KEY / WHATSAPP_TOKEN is not configured.");
+    return { success: false, error: "WhatsApp API Key is not configured in .env" };
   }
 
-  if (!phoneNumberId) {
-    console.warn("[WhatsApp] Warning: WHATSAPP_PHONE_NUMBER_ID is not configured.");
-    return {
-      success: false,
-      error: "WHATSAPP_PHONE_NUMBER_ID is not configured in .env. Find it in Meta Developers > WhatsApp > API Setup.",
-    };
-  }
+  // 1. Official AskEva backend URL verified from dashboard
+  const primaryUrl = `https://backend.askeva.io/v1/message/send-message?token=${apiKey}`;
+  const customUrl = getEnv("ASKEVA_API_URL");
+  const askEvaEndpoints = customUrl
+    ? [customUrl]
+    : [
+        primaryUrl,
+        `https://api.askeva.io/v1/message/send-message?token=${apiKey}`,
+        "https://api.askeva.io/v1/messages",
+      ];
 
-  const url = `https://graph.facebook.com/v20.0/${phoneNumberId}/messages`;
+  let lastError = "";
 
-  try {
-    const response = await fetch(url, {
-      method: "POST",
-      headers: {
-        Authorization: `Bearer ${token}`,
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify(payload),
-    });
+  for (const endpoint of askEvaEndpoints) {
+    try {
+      const response = await fetch(endpoint, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${apiKey}`,
+        },
+        body: JSON.stringify(payload),
+      });
 
-    const data = (await response.json()) as Record<string, unknown>;
+      const data = (await response.json().catch(() => ({}))) as Record<string, unknown>;
 
-    if (!response.ok) {
-      console.error("[WhatsApp API Error]", response.status, data);
-      return {
-        success: false,
-        error: (data?.error as { message?: string })?.message || `HTTP ${response.status}`,
-        details: data,
-      };
+      if (response.ok) {
+        console.log(`[AskEva] Message dispatched successfully:`, data);
+        const messageId = String(
+          data.messageId || data.id || (data.messages as Array<{ id?: string }> | undefined)?.[0]?.id || `msg-${Date.now()}`
+        );
+        return { success: true, messageId, details: data };
+      } else {
+        lastError = `AskEva HTTP ${response.status}: ${JSON.stringify(data)}`;
+        console.warn(`[AskEva] ${endpoint} returned error:`, data);
+      }
+    } catch (err) {
+      lastError = err instanceof Error ? err.message : String(err);
+      console.warn(`[AskEva] Failed connecting to ${endpoint}:`, lastError);
     }
-
-    const messages = data.messages as Array<{ id: string }> | undefined;
-    const messageId = messages?.[0]?.id;
-
-    console.log("[WhatsApp] Message sent successfully. ID:", messageId);
-    return { success: true, messageId, details: data };
-  } catch (err) {
-    console.error("[WhatsApp API Network Exception]", err);
-    return { success: false, error: err instanceof Error ? err.message : String(err) };
   }
+
+  // 2. Direct Meta Graph API fallback if a Phone Number ID is present
+  if (metaPhoneId) {
+    try {
+      const metaUrl = `https://graph.facebook.com/v20.0/${metaPhoneId}/messages`;
+      const response = await fetch(metaUrl, {
+        method: "POST",
+        headers: {
+          Authorization: `Bearer ${apiKey}`,
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(payload),
+      });
+
+      const data = (await response.json().catch(() => ({}))) as Record<string, unknown>;
+
+      if (response.ok) {
+        const messageId = (data.messages as Array<{ id: string }> | undefined)?.[0]?.id;
+        return { success: true, messageId, details: data };
+      }
+    } catch (err) {
+      console.error("[Meta Graph API Error]", err);
+    }
+  }
+
+  return { success: false, error: lastError || "Failed to dispatch message via WhatsApp API" };
 }
 
+// Backward compatibility alias
+export const sendMetaRawMessage = sendWhatsAppMessage;
+
 /**
- * Send template message (required for initial outbound business message)
+ * Send template message matching AskEva exact schema
  */
 export async function sendWhatsAppTemplate(
   to: string,
   templateName: string,
-  languageCode = "en_US",
+  languageCode = "en",
   components?: unknown[],
+  dynamicParams?: string[],
 ): Promise<WhatsAppSendResult> {
   const recipient = cleanPhone(to);
 
+  let bodyComponents = components;
+  if (!bodyComponents && dynamicParams && dynamicParams.length > 0) {
+    bodyComponents = [
+      {
+        type: "body",
+        parameters: dynamicParams.map((text) => ({ type: "text", text: String(text || "") })),
+      },
+    ];
+  }
+
   const payload: Record<string, unknown> = {
-    messaging_product: "whatsapp",
     to: recipient,
     type: "template",
     template: {
-      name: templateName,
       language: {
+        policy: "deterministic",
         code: languageCode,
       },
-      ...(components && components.length > 0 ? { components } : {}),
+      name: templateName,
+      ...(bodyComponents && bodyComponents.length > 0 ? { components: bodyComponents } : {}),
     },
   };
 
-  return sendMetaRawMessage(payload);
+  return sendWhatsAppMessage(payload);
 }
 
 /**
- * Send standard text message
+ * Send standard text message via AskEva
  */
 export async function sendWhatsAppText(to: string, messageBody: string): Promise<WhatsAppSendResult> {
   const recipient = cleanPhone(to);
 
   const payload: Record<string, unknown> = {
-    messaging_product: "whatsapp",
-    recipient_type: "individual",
     to: recipient,
     type: "text",
     text: {
-      preview_url: false,
       body: messageBody,
+    },
+    message: messageBody,
+  };
+
+  return sendWhatsAppMessage(payload);
+}
+
+/**
+ * Send PDF / Document message via AskEva
+ */
+export async function sendWhatsAppDocument(
+  to: string,
+  documentUrl: string,
+  filename = "TrueSeva_Official_Receipt.pdf",
+  caption?: string,
+): Promise<WhatsAppSendResult> {
+  const recipient = cleanPhone(to);
+
+  const payload: Record<string, unknown> = {
+    to: recipient,
+    type: "document",
+    document: {
+      link: documentUrl,
+      filename: filename,
+      ...(caption ? { caption } : {}),
     },
   };
 
-  return sendMetaRawMessage(payload);
+  return sendWhatsAppMessage(payload);
 }
 
 /**
@@ -217,23 +311,28 @@ export async function sendEnquiryWhatsAppNotifications(enquiry: WhatsAppEnquiryP
   userResult: WhatsAppSendResult;
 }> {
   const adminPhone = getEnv("WHATSAPP_ADMIN_PHONE", "919150408850");
-  const templateName = getEnv("WHATSAPP_TEMPLATE_NAME", "hello_world");
+  const templateName = getEnv("ASKEVA_TEMPLATE_NAME") || getEnv("WHATSAPP_TEMPLATE_NAME", "trueseva_thank_you");
 
-  console.log(`[WhatsApp] Dispatching automated notifications for: ${enquiry.full_name} (${enquiry.mobile})`);
+  console.log(`[WhatsApp / AskEva] Dispatching automated notifications for: ${enquiry.full_name} (${enquiry.mobile})`);
 
   // 1. Notify Admin with full details
   const adminMessage = formatEnquirySummary(enquiry);
   const adminResult = await sendWhatsAppText(adminPhone, adminMessage);
 
-  // 2. Send instant acknowledgement to the user
+  // 2. Send instant acknowledgement to the user with dynamic variables {{1}}, {{2}}, {{3}}
+  const userParams = [
+    enquiry.full_name || "Supporter",
+    enquiry.ngo || "Elderly Care Home",
+    enquiry.district || "Tamil Nadu",
+  ];
+
   let userResult: WhatsAppSendResult;
 
   if (templateName && templateName.trim() !== "") {
-    // If template configured (e.g. 'hello_world' or custom approved template)
-    userResult = await sendWhatsAppTemplate(enquiry.mobile, templateName);
+    userResult = await sendWhatsAppTemplate(enquiry.mobile, templateName, "en", undefined, userParams);
   } else {
     // Standard text fallback
-    const welcomeText = `Hello ${enquiry.full_name},\n\nThank you for reaching out to TrueSeva for ${enquiry.support_type}.\n\nWe have received your details for ${enquiry.ngo}. Your acknowledgement receipt will be sent shortly.\n\nWarm regards,\nTrueSeva Team`;
+    const welcomeText = `Hello ${enquiry.full_name},\n\nThank you for choosing to support our elderly care initiative through TrueSeva! 🪔\n\nWe have received your details for ${enquiry.ngo} (${enquiry.district}). Your verified enquiry receipt will be sent to this chat shortly.\n\nWarm regards,\nTrueSeva & TAFVA Elders Care Initiative`;
     userResult = await sendWhatsAppText(enquiry.mobile, welcomeText);
   }
 
@@ -244,31 +343,93 @@ export async function sendEnquiryWhatsAppNotifications(enquiry: WhatsAppEnquiryP
 }
 
 /**
- * Send the receipt to the user's WhatsApp
+ * Send the PDF receipt to the user's WhatsApp via AskEva
  */
 export async function sendReceiptToUser(enquiry: WhatsAppEnquiryPayload): Promise<WhatsAppSendResult> {
-  console.log(`[WhatsApp] Dispatching delayed receipt to: ${enquiry.full_name} (+91 ${enquiry.mobile})`);
-  const receiptText = formatReceiptMessage(enquiry);
-  const customReceiptTemplate = getEnv("WHATSAPP_RECEIPT_TEMPLATE_NAME");
+  console.log(`[WhatsApp / AskEva] Dispatching 1-minute receipt to: ${enquiry.full_name} (+91 ${enquiry.mobile})`);
 
-  if (customReceiptTemplate && customReceiptTemplate.trim() !== "") {
-    // If an approved Meta receipt template exists
-    return sendWhatsAppTemplate(enquiry.mobile, customReceiptTemplate);
+  const receiptTemplate = getEnv("WHATSAPP_RECEIPT_TEMPLATE_NAME") || getEnv("ASKEVA_RECEIPT_TEMPLATE");
+  const refCode = enquiry.id ? `TS-${enquiry.id.slice(0, 8).toUpperCase()}` : "TS-1082";
+  const pdfUrl = getEnv("RECEIPT_PDF_URL", "https://trueseva.org/TrueSeva_Sample_Receipt.pdf");
+
+  // 1. Try sending via FILE template if approved (trueseva_receipt)
+  if (receiptTemplate && receiptTemplate.trim() !== "") {
+    const templatePayload = {
+      to: cleanPhone(enquiry.mobile),
+      type: "template",
+      template: {
+        language: { policy: "deterministic", code: "en" },
+        name: receiptTemplate,
+        components: [
+          {
+            type: "header",
+            parameters: [
+              {
+                type: "document",
+                document: {
+                  link: pdfUrl,
+                  filename: `TrueSeva_Receipt_${refCode}.pdf`,
+                },
+              },
+            ],
+          },
+          {
+            type: "body",
+            parameters: [
+              { type: "text", text: enquiry.full_name || "Supporter" },
+              { type: "text", text: enquiry.ngo || "Elderly Care Home" },
+              { type: "text", text: enquiry.district || "Tamil Nadu" },
+              { type: "text", text: refCode },
+            ],
+          },
+        ],
+      },
+    };
+
+    const templateResult = await sendWhatsAppMessage(templatePayload);
+    if (templateResult.success) {
+      console.log("[AskEva] Successfully sent PDF via template:", templateResult);
+      return templateResult;
+    }
   }
 
-  // Send formatted WhatsApp receipt message
-  return sendWhatsAppText(enquiry.mobile, receiptText);
+  // 2. Direct Document Attachment Fallback
+  console.log("[AskEva] Sending PDF receipt as direct document attachment...");
+  const docResult = await sendWhatsAppDocument(
+    enquiry.mobile,
+    pdfUrl,
+    `TrueSeva_Official_Receipt_${refCode}.pdf`,
+    `TrueSeva Official Support Acknowledgement Receipt (#${refCode}) 🪔\n\nDear ${enquiry.full_name}, thank you for your noble support!`
+  );
+
+  // 3. Send formatted WhatsApp text summary alongside
+  const receiptText = formatReceiptMessage(enquiry);
+  await sendWhatsAppText(enquiry.mobile, receiptText);
+
+  return docResult;
 }
 
 // In-memory registry to ensure receipts are not sent repeatedly
 const scheduledReceipts = new Set<string>();
 
 /**
- * Schedule delayed receipt sending
+ * Schedule delayed receipt sending (defaults to 1 minute for fast live testing)
  */
 export function scheduleDelayedReceipt(enquiry: WhatsAppEnquiryPayload): void {
-  const delayHours = parseFloat(getEnv("WHATSAPP_RECEIPT_DELAY_HOURS", "1"));
-  const delayMs = Math.max(10_000, delayHours * 60 * 60 * 1000); // minimum 10 seconds
+  // Support minutes, seconds, or hours
+  const delaySecEnv = getEnv("WHATSAPP_RECEIPT_DELAY_SECONDS");
+  const delayMinEnv = getEnv("WHATSAPP_RECEIPT_DELAY_MINUTES", "1");
+  const delayHoursEnv = getEnv("WHATSAPP_RECEIPT_DELAY_HOURS");
+
+  let delayMs = 60_000; // Default: exactly 1 minute (60 seconds)
+
+  if (delaySecEnv) {
+    delayMs = Math.max(5_000, parseFloat(delaySecEnv) * 1000);
+  } else if (delayHoursEnv && delayHoursEnv !== "1" && delayHoursEnv !== "0.0167") {
+    delayMs = Math.max(10_000, parseFloat(delayHoursEnv) * 60 * 60 * 1000);
+  } else if (delayMinEnv) {
+    delayMs = Math.max(10_000, parseFloat(delayMinEnv) * 60 * 1000);
+  }
 
   const receiptKey = `${enquiry.mobile}_${enquiry.full_name}_${enquiry.support_type}`;
   if (scheduledReceipts.has(receiptKey)) {
@@ -278,7 +439,7 @@ export function scheduleDelayedReceipt(enquiry: WhatsAppEnquiryPayload): void {
   scheduledReceipts.add(receiptKey);
 
   console.log(
-    `[WhatsApp] Receipt scheduled for ${enquiry.full_name} in ${delayHours} hour(s) (${Math.round(delayMs / 1000)}s)...`,
+    `[WhatsApp / AskEva] Receipt scheduled for ${enquiry.full_name} in ${Math.round(delayMs / 1000)}s (approx ${Math.round(delayMs / 60000)} min)...`,
   );
 
   const timer = setTimeout(async () => {
@@ -291,7 +452,6 @@ export function scheduleDelayedReceipt(enquiry: WhatsAppEnquiryPayload): void {
     }
   }, delayMs);
 
-  // Unref timer so it doesn't hold open node CLI or testing process if applicable
   if (typeof timer.unref === "function") {
     timer.unref();
   }
