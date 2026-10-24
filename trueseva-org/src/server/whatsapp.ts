@@ -460,15 +460,15 @@ export async function scheduleDelayedReceipt(enquiry: WhatsAppEnquiryPayload): P
   const qstashUrl = getEnv("QSTASH_URL", "https://qstash-eu-central-1.upstash.io");
   const siteUrl = getEnv("PUBLIC_SITE_URL", "https://trueseva-org.vercel.app");
   const delaySecEnv = getEnv("WHATSAPP_RECEIPT_DELAY_SECONDS");
-  const delayMinEnv = getEnv("WHATSAPP_RECEIPT_DELAY_MINUTES", "2");
-  const delayHoursStr = getEnv("WHATSAPP_RECEIPT_DELAY_HOURS");
+  const delayMinEnv = getEnv("WHATSAPP_RECEIPT_DELAY_MINUTES");
+  const delayHoursStr = getEnv("WHATSAPP_RECEIPT_DELAY_HOURS", "1");
 
-  let delaySec = 120; // 2 minutes default for live testing
+  let delaySec = 3600; // Exactly 1 hour default (3600s) for official receipt
   if (delaySecEnv) {
     delaySec = Math.max(10, parseInt(delaySecEnv, 10));
   } else if (delayMinEnv) {
     delaySec = Math.max(10, Math.round(parseFloat(delayMinEnv) * 60));
-  } else if (delayHoursStr && delayHoursStr !== "1") {
+  } else if (delayHoursStr) {
     delaySec = Math.max(10, Math.round(parseFloat(delayHoursStr) * 3600));
   }
 
