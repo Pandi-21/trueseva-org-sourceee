@@ -54,7 +54,9 @@ export async function handleWhatsAppApiRoute(request: Request, serverEnv?: unkno
         status: 200,
         headers: {
           "content-type": "application/pdf",
-          "content-disposition": `inline; filename="TrueSeva_Receipt_${ref}.pdf"`,
+          "content-disposition": `attachment; filename="TrueSeva_Receipt_${ref}.pdf"`,
+          "content-length": String(pdfBuffer.length),
+          "accept-ranges": "bytes",
           "cache-control": "public, max-age=86400",
         },
       });
