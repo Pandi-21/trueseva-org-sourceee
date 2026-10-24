@@ -459,14 +459,24 @@ export async function scheduleDelayedReceipt(enquiry: WhatsAppEnquiryPayload): P
   const qstashToken = getEnv("QSTASH_TOKEN");
   const qstashUrl = getEnv("QSTASH_URL", "https://qstash-eu-central-1.upstash.io");
   const siteUrl = getEnv("PUBLIC_SITE_URL", "https://trueseva-org.vercel.app");
-  const delayHoursStr = getEnv("WHATSAPP_RECEIPT_DELAY_HOURS", "1");
-  const delaySec = Math.max(30, Math.round(parseFloat(delayHoursStr) * 3600));
+  const delaySecEnv = getEnv("WHATSAPP_RECEIPT_DELAY_SECONDS");
+  const delayMinEnv = getEnv("WHATSAPP_RECEIPT_DELAY_MINUTES", "2");
+  const delayHoursStr = getEnv("WHATSAPP_RECEIPT_DELAY_HOURS");
+
+  let delaySec = 120; // 2 minutes default for live testing
+  if (delaySecEnv) {
+    delaySec = Math.max(10, parseInt(delaySecEnv, 10));
+  } else if (delayMinEnv) {
+    delaySec = Math.max(10, Math.round(parseFloat(delayMinEnv) * 60));
+  } else if (delayHoursStr && delayHoursStr !== "1") {
+    delaySec = Math.max(10, Math.round(parseFloat(delayHoursStr) * 3600));
+  }
 
   if (qstashToken && qstashToken.trim() !== "") {
     const destination = `${siteUrl.replace(/\/$/, "")}/api/whatsapp/delayed-receipt`;
     const publishUrl = `${qstashUrl.replace(/\/$/, "")}/v2/publish/${destination}`;
 
-    console.log(`[QStash] Scheduling 1-hour delayed receipt for ${enquiry.full_name} (${delaySec}s) -> ${destination}`);
+    console.log(`[QStash] Scheduling delayed receipt for ${enquiry.full_name} in ${delaySec}s (${Math.round(delaySec / 60)} min) -> ${destination}`);
 
     try {
       const qstashRes = await fetch(publishUrl, {
