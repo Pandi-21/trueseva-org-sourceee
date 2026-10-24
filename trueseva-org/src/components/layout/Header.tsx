@@ -17,18 +17,20 @@ export function Header() {
   return (
     <header className="fixed inset-x-0 top-0 z-40">
       {/* Top Diwali Campaign Announcement Banner */}
-      <div className="bg-gradient-to-r from-amber-700 via-primary to-amber-700 text-primary-foreground px-4 py-2 text-center text-xs md:text-sm font-medium shadow-xs">
-        <div className="mx-auto flex max-w-7xl items-center justify-center gap-2 flex-wrap">
+      <div className="bg-gradient-to-r from-amber-700 via-primary to-amber-700 text-primary-foreground px-3 py-1.5 sm:px-4 sm:py-2 text-center text-xs sm:text-sm font-medium shadow-xs">
+        <div className="mx-auto flex max-w-7xl items-center justify-center gap-1.5 sm:gap-2 flex-wrap">
           <span className="inline-flex items-center gap-1.5">
-            <span aria-hidden="true">🪔</span>
+            <span aria-hidden="true" className="shrink-0 text-sm">🪔</span>
             <span>
-              <strong>This Diwali:</strong> Light up the lives of the destitute! Find genuinely run care homes in your district &amp; support directly with monetary or material aid.
+              <strong className="text-amber-200 font-bold">This Diwali:</strong>{" "}
+              <span className="hidden sm:inline">Light up the lives of the destitute! Find genuinely run care homes in your district &amp; support directly with monetary or material aid.</span>
+              <span className="sm:hidden">Light up lives of the destitute across Tamil Nadu!</span>
             </span>
           </span>
           <a
             href="#directory"
             onClick={(e) => scrollToSection("directory", e)}
-            className="inline-flex items-center gap-1 font-bold underline underline-offset-4 hover:text-amber-200 transition-colors whitespace-nowrap cursor-pointer ml-1"
+            className="inline-flex items-center gap-1 font-bold underline underline-offset-4 hover:text-amber-200 transition-colors whitespace-nowrap cursor-pointer text-xs sm:text-sm shrink-0 ml-1"
           >
             Find Homes &rarr;
           </a>
@@ -38,11 +40,11 @@ export function Header() {
       <div
         className={`transition-all duration-300 ${
           scrolled
-            ? "border-b bg-background/95 py-2.5 backdrop-blur shadow-xs"
-            : "bg-background/85 backdrop-blur-sm py-3.5"
+            ? "border-b bg-background/95 py-2 backdrop-blur shadow-xs"
+            : "bg-background/90 backdrop-blur-sm py-2.5 sm:py-3.5"
         }`}
       >
-        <div className="mx-auto flex max-w-7xl items-center justify-between px-5 lg:px-8">
+        <div className="mx-auto flex max-w-7xl items-center justify-between px-4 sm:px-5 lg:px-8">
           <Brand />
           <nav aria-label="Main" className="hidden items-center gap-7 lg:flex">
             {NAV.map((n) => (
