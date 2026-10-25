@@ -189,8 +189,8 @@ export const SMILE_HOMES: SmileHome[] = [
     sNo: 17,
     city: "Theni",
     name: "Manithaneyam Orphanage Home",
-    label: "Manithaneyam Orphanage Home – Manithaneya Kappagam, Theni",
-    address: "Manithaneya Kappagam, Theni",
+    label: "Manithaneyam Orphanage Home – Kodangipatti, Theni District",
+    address: "Kodangipatti, Theni District",
     phone: CENTRAL_PHONE,
     paymentAccount: "humanity-trust",
   },
@@ -249,7 +249,7 @@ export const DISTRICT_NGOS: Record<string, string[]> = {
     "Rojavanam Oldage Home – Courtallam (Five Falls Road)",
   ],
   Theni: [
-    "Manithaneyam Orphanage Home – Manithaneya Kappagam, Theni",
+    "Manithaneyam Orphanage Home – Kodangipatti, Theni District",
   ],
   Tiruchendur: [
     "Brindavanam SMILE Oldage Home – Near Municipality, Tiruchendur",

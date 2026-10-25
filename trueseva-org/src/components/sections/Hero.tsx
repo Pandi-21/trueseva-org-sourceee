@@ -41,7 +41,7 @@ export function Hero() {
           <div className="relative overflow-hidden rounded-2xl border border-border/80 bg-card shadow-lg">
             <img
               src={hero}
-              alt="Elderly care fieldwork and direct support in Tamil Nadu"
+              alt="Orphan homes fieldwork and direct support in Tamil Nadu"
               width={1200}
               height={800}
               fetchPriority="high"

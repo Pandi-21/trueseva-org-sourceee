@@ -62,7 +62,7 @@ export function Header() {
               onClick={(e) => scrollToSection("directory", e)}
               className="rounded-full bg-primary px-5 py-2.5 text-sm font-semibold text-primary-foreground transition hover:opacity-90 cursor-pointer shadow-xs"
             >
-              Elderly Care
+              Orphan Homes
             </a>
           </nav>
           <button
@@ -99,7 +99,7 @@ export function Header() {
             }}
             className="mt-3 block rounded-full bg-primary py-3 text-center font-semibold text-primary-foreground cursor-pointer"
           >
-            Elderly Care
+            Orphan Homes
           </a>
         </nav>
       )}

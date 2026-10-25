@@ -4,7 +4,7 @@ import { Reveal } from "@/components/common/Reveal";
 export function NewsEvents() {
   const news = [
     {
-      title: "Diwali Elderly Care Pilot Launch",
+      title: "Diwali Orphan Homes Pilot Launch",
       description: "Preparation of detailed essential-needs lists for 10 Care for All Homes across 10 districts of Tamil Nadu.",
       status: "In Progress",
       statusType: "progress",
@@ -33,7 +33,7 @@ export function NewsEvents() {
           <p className="eyebrow">News & Events</p>
           <h2 className="mt-4 text-4xl font-medium md:text-5xl">Updates From the Initiative</h2>
           <p className="mt-5 text-lg text-muted-foreground">
-            Stay informed about the elderly care initiative, essential-needs awareness, and plans to improve support for eligible care homes across Tamil Nadu.
+            Stay informed about the orphan homes initiative, essential-needs awareness, and plans to improve support for eligible care homes across Tamil Nadu.
           </p>
         </Reveal>
 

@@ -350,7 +350,7 @@ export async function sendEnquiryWhatsAppNotifications(enquiry: WhatsAppEnquiryP
     userResult = await sendWhatsAppTemplate(enquiry.mobile, templateName, "en", undefined, userParams);
   } else {
     // Standard text fallback
-    const welcomeText = `Hello ${enquiry.full_name},\n\nThank you for choosing to support our elderly care initiative through HelpHomesIndia! 🪔\n\nWe have received your details for ${enquiry.ngo} (${enquiry.district}). Your verified enquiry receipt will be sent to this chat shortly.\n\nWarm regards,\nHelpHomesIndia & TAFVA Verified Orphanages Homes`;
+    const welcomeText = `Hello ${enquiry.full_name},\n\nThank you for choosing to support our orphan homes initiative through HelpHomesIndia! 🪔\n\nWe have received your details for ${enquiry.ngo} (${enquiry.district}). Your verified enquiry receipt will be sent to this chat shortly.\n\nWarm regards,\nHelpHomesIndia & TAFVA Verified Orphanages Homes`;
     userResult = await sendWhatsAppText(enquiry.mobile, welcomeText);
   }
 
@@ -382,7 +382,7 @@ export async function sendReceiptToUser(enquiry: WhatsAppEnquiryPayload): Promis
       mobile: enquiry.mobile || "",
       ngo: enquiry.ngo || "Care for All Home",
       dist: enquiry.district || "Tamil Nadu",
-      supp: enquiry.support_type || "Elderly Care Support",
+      supp: enquiry.support_type || "Orphan Homes Support",
     });
     pdfUrl = `${siteUrl.replace(/\/$/, "")}/api/whatsapp/receipt.pdf?${params.toString()}`;
   }

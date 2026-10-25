@@ -67,4 +67,16 @@ describe("enquiry rules", () => {
       expect(home?.phone).toBe("9150408850");
     }
   });
+
+  it("resolves Manithaneyam Orphanage Home in Theni with Kodangipatti, Theni District", () => {
+    const theniNgos = getNgosForDistrict("Theni");
+    expect(theniNgos).toContain("Manithaneyam Orphanage Home – Kodangipatti, Theni District");
+
+    const home = getSmileHomeDetails("Manithaneyam Orphanage Home – Kodangipatti, Theni District", "Theni");
+    expect(home).toBeDefined();
+    expect(home?.name).toBe("Manithaneyam Orphanage Home");
+    expect(home?.city).toBe("Theni");
+    expect(home?.address).toBe("Kodangipatti, Theni District");
+    expect(home?.paymentAccount).toBe("humanity-trust");
+  });
 });

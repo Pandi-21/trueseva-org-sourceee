@@ -39,7 +39,7 @@ export async function handleWhatsAppApiRoute(request: Request, serverEnv?: unkno
       const mobile = url.searchParams.get("mobile") || "";
       const ngo = url.searchParams.get("ngo") || "Care for All Home";
       const district = url.searchParams.get("dist") || "Tamil Nadu";
-      const supportType = url.searchParams.get("supp") || "Elderly Care Support";
+      const supportType = url.searchParams.get("supp") || "Orphan Homes Support";
 
       const pdfBuffer = createReceiptPdf({
         ref,
@@ -258,7 +258,7 @@ export async function handleWhatsAppApiRoute(request: Request, serverEnv?: unkno
           ...(item.email ? { email: item.email } : {}),
           district: item.district || "Tamil Nadu",
           ngo: ngo || "SMILE Care Home",
-          support_type: item.support_type || "Elderly Care Support",
+          support_type: item.support_type || "Orphan Homes Support",
           ...(amount ? { amount } : {}),
         };
 

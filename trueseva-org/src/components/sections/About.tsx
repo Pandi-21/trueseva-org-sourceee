@@ -18,7 +18,7 @@ export function About() {
         </Reveal>
         <Reveal className="lg:col-span-6 lg:col-start-7 lg:pt-8" delay={100}>
           <p className="eyebrow">About Us</p>
-          <h2 className="mt-4 text-4xl font-medium md:text-5xl">A Pilot Initiative for Elderly Care</h2>
+          <h2 className="mt-4 text-4xl font-medium md:text-5xl">A Pilot Initiative for Orphan Homes</h2>
           <div className="mt-8 space-y-5 text-lg leading-relaxed text-foreground/85">
             <p className="font-display text-2xl leading-snug text-foreground">
               HelpHomesIndia is a transparent community guidance platform operating under the guidance of the Tamil Nadu Federation of Voluntary Agencies (TAFVA).

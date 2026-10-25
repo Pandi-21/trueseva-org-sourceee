@@ -88,7 +88,7 @@ export function createReceiptPdf(data: ReceiptData): Buffer {
     ["Mobile Number:", "+91 " + (data.mobile || "N/A")],
     ["Selected Care Home:", data.ngo || "Care for All Home"],
     ["District / City:", data.district || "Tamil Nadu"],
-    ["Support Category:", data.supportType || "Elderly Care Assistance"],
+    ["Support Category:", data.supportType || "Orphan Homes Assistance"],
     ["Coordination Status:", "TAFVA Field Verified - Direct Coordination Active"],
   ];
 

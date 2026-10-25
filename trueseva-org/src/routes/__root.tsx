@@ -80,7 +80,7 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
       { name: "viewport", content: "width=device-width, initial-scale=1" },
       { title: "HelpHomesIndia — Support Care for All Homes in Tamil Nadu | TAFVA Verified" },
       { name: "description", content: "Directly support 10 verified Care for All Homes across 10 districts in Tamil Nadu with new clothing, kitchen groceries & medical aid. Zero commission, field verified by TAFVA." },
-      { name: "keywords", content: "care for all homes, elderly care homes tamil nadu, old age homes tamil nadu, donate to old age homes, direct elder care support, tafva tamil nadu, helphomesindia, elderly care theni madurai chennai, transparent charity tamil nadu" },
+      { name: "keywords", content: "care for all homes, orphan homes tamil nadu, orphanages tamil nadu, donate to orphan homes, direct orphan homes support, tafva tamil nadu, helphomesindia, orphan homes theni madurai chennai, transparent charity tamil nadu" },
       { name: "author", content: "HelpHomesIndia Initiative & TAFVA" },
       { name: "publisher", content: "Tamil Nadu Federation of Voluntary Agencies (TAFVA)" },
       { name: "robots", content: "index, follow, max-snippet:-1, max-image-preview:large, max-video-preview:-1" },
