@@ -14,7 +14,7 @@ export function Hero() {
             Light Up the Lives of the <span className="text-primary">Destitute This Diwali.</span> 🪔
           </h1>
           <p className="mt-4 max-w-lg text-sm sm:text-base md:text-lg leading-relaxed text-muted-foreground">
-            Find genuinely run destitute and elderly care homes in your district across Tamil Nadu. Support them directly with monetary assistance or material donations like new clothing and essential groceries—with 100% transparency and zero intermediaries.
+            Find genuinely run destitute and Care for All Homes in your district across Tamil Nadu. Support them directly with monetary assistance or material donations like new clothing and essential groceries—with 100% transparency and zero intermediaries.
           </p>
           <p className="mt-3 text-xs sm:text-sm md:text-base font-medium text-primary flex items-center gap-2">
             <span aria-hidden="true">✨</span>

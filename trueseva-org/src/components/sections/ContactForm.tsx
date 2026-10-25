@@ -121,7 +121,7 @@ export function ContactForm() {
 
     // Format pre-filled WhatsApp message for manual chat link
     const lines = [
-      "New Support Enquiry - TrueSeva",
+      "New Support Enquiry - HelpHomesIndia",
       "",
       `Name: ${v.full_name.trim()}`,
       `Mobile: +91 ${normaliseMobile(v.mobile)}`,
@@ -136,7 +136,7 @@ export function ContactForm() {
     if (amountVal) lines.push(`Amount: ${amountVal}`);
     if (v.message.trim()) lines.push(`Message: ${v.message.trim()}`);
     lines.push("");
-    lines.push("Sent via TrueSeva initiative portal");
+    lines.push("Sent via HelpHomesIndia initiative portal");
     const waUrl = `https://wa.me/${WHATSAPP_NUMBER}?text=${encodeURIComponent(lines.join("\n"))}`;
 
     try {
@@ -205,7 +205,7 @@ export function ContactForm() {
           <p className="eyebrow">Contact Us</p>
           <h2 className="mt-4 text-4xl font-medium md:text-5xl">Help Connect Support With Need</h2>
           <p className="mt-5 text-lg text-muted-foreground">
-            Have questions about supporting an elderly care home? Share your details and the type of assistance you are interested in.
+            Have questions about supporting a Care for All Home? Share your details and the type of assistance you are interested in.
           </p>
           <div className="mt-10 space-y-6">
             {[
@@ -244,7 +244,7 @@ export function ContactForm() {
               <span className="eyebrow">Direct Assistance</span>
               <h3 className="text-xl md:text-2xl font-bold text-foreground">Support Enquiry Form</h3>
               <p className="mt-1 text-xs text-muted-foreground">
-                Submit your details to coordinate transparent, direct support with verified elderly homes.
+                Submit your details to coordinate transparent, direct support with verified Care for All Homes.
               </p>
             </div>
 
@@ -475,7 +475,7 @@ export function ContactForm() {
                     </p>
                     <p className="flex items-center gap-1.5">
                       <Clock className="h-3.5 w-3.5 text-primary shrink-0" />
-                      <span>An official TrueSeva acknowledgement receipt will be sent automatically to your WhatsApp in 1–2 hours.</span>
+                      <span>An official HelpHomesIndia acknowledgement receipt will be sent automatically to your WhatsApp in 1–2 hours.</span>
                     </p>
                   </div>
                   {feedback.manualWaUrl && (

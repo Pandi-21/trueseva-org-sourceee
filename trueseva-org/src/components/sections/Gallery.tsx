@@ -112,7 +112,7 @@ export function Gallery() {
           <p className="eyebrow">Gallery</p>
           <h2 className="mt-4 text-4xl font-medium md:text-5xl">A Closer Look at the Initiative</h2>
           <p className="mt-4 text-base md:text-lg text-muted-foreground max-w-3xl">
-            Real moments from verified elderly care homes across Tamil Nadu — highlighting compassionate care, healthcare support, community visits, and dignified living.
+            Real moments from verified Care for All Homes across Tamil Nadu — highlighting compassionate care, healthcare support, community visits, and dignified living.
           </p>
         </Reveal>
 

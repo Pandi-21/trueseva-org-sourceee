@@ -1,5 +1,5 @@
 /**
- * Meta WhatsApp Cloud API Service for TrueSeva
+ * Meta WhatsApp Cloud API Service for HelpHomesIndia
  * Handles automated notification dispatch, acknowledgements, and delayed receipts.
  */
 
@@ -257,7 +257,7 @@ export async function sendWhatsAppDocument(
 export function formatEnquirySummary(enquiry: WhatsAppEnquiryPayload): string {
   const amountStr = enquiry.amount ? `₹${Number(enquiry.amount).toLocaleString("en-IN")}` : "N/A";
   return [
-    "📋 *New TrueSeva Support Enquiry*",
+    "📋 *New HelpHomesIndia Support Enquiry*",
     "──────────────────────────",
     `👤 *Name:* ${enquiry.full_name}`,
     `📱 *Mobile:* +91 ${enquiry.mobile}`,
@@ -268,7 +268,7 @@ export function formatEnquirySummary(enquiry: WhatsAppEnquiryPayload): string {
     enquiry.support_type === "Financial Assistance" ? `💰 *Amount:* ${amountStr}` : null,
     enquiry.message ? `💬 *Message:* ${enquiry.message}` : null,
     "──────────────────────────",
-    "Sent automatically via TrueSeva initiative portal",
+    "Sent automatically via HelpHomesIndia initiative portal",
   ]
     .filter(Boolean)
     .join("\n");
@@ -292,7 +292,7 @@ export function formatReceiptMessage(enquiry: WhatsAppEnquiryPayload): string {
 
   return [
     "━━━━━━━━━━━━━━━━━━━━━━━━━━━",
-    "  💐 *TRUESEVA INITIATIVE* 💐",
+    "  💐 *HELPHOMESINDIA INITIATIVE* 💐",
     "  *OFFICIAL ACKNOWLEDGEMENT RECEIPT*",
     "━━━━━━━━━━━━━━━━━━━━━━━━━━━",
     `*Receipt Reference:* ${refCode}`,
@@ -340,7 +340,7 @@ export async function sendEnquiryWhatsAppNotifications(enquiry: WhatsAppEnquiryP
   // 2. Send instant acknowledgement to the user with dynamic variables {{1}}, {{2}}, {{3}}
   const userParams = [
     enquiry.full_name || "Supporter",
-    enquiry.ngo || "Elderly Care Home",
+    enquiry.ngo || "Care for All Home",
     enquiry.district || "Tamil Nadu",
   ];
 
@@ -350,7 +350,7 @@ export async function sendEnquiryWhatsAppNotifications(enquiry: WhatsAppEnquiryP
     userResult = await sendWhatsAppTemplate(enquiry.mobile, templateName, "en", undefined, userParams);
   } else {
     // Standard text fallback
-    const welcomeText = `Hello ${enquiry.full_name},\n\nThank you for choosing to support our elderly care initiative through TrueSeva! 🪔\n\nWe have received your details for ${enquiry.ngo} (${enquiry.district}). Your verified enquiry receipt will be sent to this chat shortly.\n\nWarm regards,\nTrueSeva & TAFVA Elders Care Initiative`;
+    const welcomeText = `Hello ${enquiry.full_name},\n\nThank you for choosing to support our elderly care initiative through HelpHomesIndia! 🪔\n\nWe have received your details for ${enquiry.ngo} (${enquiry.district}). Your verified enquiry receipt will be sent to this chat shortly.\n\nWarm regards,\nHelpHomesIndia & TAFVA Elders Care Initiative`;
     userResult = await sendWhatsAppText(enquiry.mobile, welcomeText);
   }
 
@@ -380,7 +380,7 @@ export async function sendReceiptToUser(enquiry: WhatsAppEnquiryPayload): Promis
       ref: refCode,
       name: enquiry.full_name || "Supporter",
       mobile: enquiry.mobile || "",
-      ngo: enquiry.ngo || "Elderly Care Home",
+      ngo: enquiry.ngo || "Care for All Home",
       dist: enquiry.district || "Tamil Nadu",
       supp: enquiry.support_type || "Elderly Care Support",
     });
@@ -408,7 +408,7 @@ export async function sendReceiptToUser(enquiry: WhatsAppEnquiryPayload): Promis
                 type: "document",
                 document: {
                   link: pdfUrl,
-                  filename: `TrueSeva_Receipt_${refCode}.pdf`,
+                  filename: `HelpHomesIndia_Receipt_${refCode}.pdf`,
                 },
               },
             ],
@@ -417,7 +417,7 @@ export async function sendReceiptToUser(enquiry: WhatsAppEnquiryPayload): Promis
             type: "body",
             parameters: [
               { type: "text", text: enquiry.full_name || "Supporter" },
-              { type: "text", text: enquiry.ngo || "Elderly Care Home" },
+              { type: "text", text: enquiry.ngo || "Care for All Home" },
               { type: "text", text: enquiry.district || "Tamil Nadu" },
               { type: "text", text: refCode },
             ],
@@ -438,8 +438,8 @@ export async function sendReceiptToUser(enquiry: WhatsAppEnquiryPayload): Promis
   const docResult = await sendWhatsAppDocument(
     enquiry.mobile,
     pdfUrl,
-    `TrueSeva_Official_Receipt_${refCode}.pdf`,
-    `TrueSeva Official Support Acknowledgement Receipt (#${refCode}) 🪔\n\nDear ${enquiry.full_name}, thank you for your noble support!`
+    `HelpHomesIndia_Official_Receipt_${refCode}.pdf`,
+    `HelpHomesIndia Official Support Acknowledgement Receipt (#${refCode}) 🪔\n\nDear ${enquiry.full_name}, thank you for your noble support!`
   );
 
   // 3. Send formatted WhatsApp text summary alongside

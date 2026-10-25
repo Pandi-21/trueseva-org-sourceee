@@ -37,7 +37,7 @@ export async function handleWhatsAppApiRoute(request: Request, serverEnv?: unkno
       const ref = url.searchParams.get("ref") || "TS-1082";
       const fullName = url.searchParams.get("name") || "Supporter";
       const mobile = url.searchParams.get("mobile") || "";
-      const ngo = url.searchParams.get("ngo") || "Elderly Care Home";
+      const ngo = url.searchParams.get("ngo") || "Care for All Home";
       const district = url.searchParams.get("dist") || "Tamil Nadu";
       const supportType = url.searchParams.get("supp") || "Elderly Care Support";
 
@@ -54,7 +54,7 @@ export async function handleWhatsAppApiRoute(request: Request, serverEnv?: unkno
         status: 200,
         headers: {
           "content-type": "application/pdf",
-          "content-disposition": `attachment; filename="TrueSeva_Receipt_${ref}.pdf"`,
+          "content-disposition": `attachment; filename="HelpHomesIndia_Receipt_${ref}.pdf"`,
           "content-length": String(pdfBuffer.length),
           "accept-ranges": "bytes",
           "cache-control": "public, max-age=86400",
@@ -183,7 +183,7 @@ export async function handleWhatsAppApiRoute(request: Request, serverEnv?: unkno
       // If template failed, attempt direct text message
       const textResult = await sendWhatsAppText(
         targetPhone,
-        body.message || "Test message from TrueSeva WhatsApp Integration",
+        body.message || "Test message from HelpHomesIndia WhatsApp Integration",
       );
 
       return new Response(

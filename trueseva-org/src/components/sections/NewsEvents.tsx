@@ -5,7 +5,7 @@ export function NewsEvents() {
   const news = [
     {
       title: "Diwali Elderly Care Pilot Launch",
-      description: "Preparation of detailed essential-needs lists for 10 elderly care homes across 10 districts of Tamil Nadu.",
+      description: "Preparation of detailed essential-needs lists for 10 Care for All Homes across 10 districts of Tamil Nadu.",
       status: "In Progress",
       statusType: "progress",
       statusClass: "bg-primary/10 text-primary border-primary/25",
@@ -19,7 +19,7 @@ export function NewsEvents() {
     },
     {
       title: "A Future Statewide Initiative",
-      description: "Plans to explore a broader platform connecting eligible elderly care homes across Tamil Nadu following the pilot initiative.",
+      description: "Plans to explore a broader platform connecting eligible Care for All Homes across Tamil Nadu following the pilot initiative.",
       status: "Planned",
       statusType: "planned",
       statusClass: "bg-muted text-muted-foreground border-border",

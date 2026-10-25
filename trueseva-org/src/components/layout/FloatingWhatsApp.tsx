@@ -3,7 +3,7 @@ import { WHATSAPP_NUMBER } from "@/lib/constants";
 
 export function FloatingWhatsApp() {
   const defaultMsg = encodeURIComponent(
-    "Hello TrueSeva! I would like to know more about supporting elderly care homes across Tamil Nadu."
+    "Hello HelpHomesIndia! I would like to know more about supporting Care for All Homes across Tamil Nadu."
   );
 
   return (
@@ -12,7 +12,7 @@ export function FloatingWhatsApp() {
         href={`https://wa.me/${WHATSAPP_NUMBER}?text=${defaultMsg}`}
         target="_blank"
         rel="noopener noreferrer"
-        aria-label="Chat with TrueSeva on WhatsApp"
+        aria-label="Chat with HelpHomesIndia on WhatsApp"
         className="group relative flex h-14 w-14 items-center justify-center rounded-full bg-[#25D366] text-white shadow-xl transition-all duration-300 hover:scale-110 hover:shadow-2xl hover:bg-[#20bd5a] focus:outline-none focus:ring-4 focus:ring-[#25D366]/40 active:scale-95"
       >
         {/* Animated Ripple Pulse */}

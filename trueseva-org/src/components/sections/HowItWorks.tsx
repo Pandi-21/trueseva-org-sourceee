@@ -3,7 +3,7 @@ import { Reveal } from "@/components/common/Reveal";
 const STEPS = [
   {
     t: "Explore",
-    d: "Discover an elderly home's current essential needs and available information.",
+    d: "Discover a Care for All Home's current essential needs and available information.",
   },
   {
     t: "Confirm",
@@ -11,7 +11,7 @@ const STEPS = [
   },
   {
     t: "Support Directly",
-    d: "Send clothing and groceries directly to the elderly home or transfer financial assistance directly to its verified official trust account.",
+    d: "Send clothing and groceries directly to the Care for All Home or transfer financial assistance directly to its verified official trust account.",
   },
   {
     t: "Follow Up",
