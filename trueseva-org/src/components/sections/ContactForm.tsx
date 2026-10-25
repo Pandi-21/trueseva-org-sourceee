@@ -430,11 +430,10 @@ export function ContactForm() {
                             setV((prev) => ({ ...prev, amount: amt }));
                             clearError("amount");
                           }}
-                          className={`rounded-full border px-2.5 py-0.5 text-xs font-semibold transition-all cursor-pointer ${
-                            v.amount === amt
+                          className={`rounded-full border px-2.5 py-0.5 text-xs font-semibold transition-all cursor-pointer ${v.amount === amt
                               ? "border-primary bg-primary text-white shadow-xs"
                               : "border-border/80 bg-background hover:border-primary/50 text-foreground/80 hover:text-primary"
-                          }`}
+                            }`}
                         >
                           ₹{Number(amt).toLocaleString("en-IN")}
                         </button>

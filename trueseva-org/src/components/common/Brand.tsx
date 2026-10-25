@@ -24,16 +24,14 @@ export function Brand({ isFooter = false }: { isFooter?: boolean }) {
       <Logo className="h-12 w-12 md:h-14 md:w-14 transition-transform duration-300 group-hover:scale-105" />
       <span className="leading-tight">
         <span
-          className={`block font-display text-xl md:text-2xl font-bold tracking-tight ${
-            isFooter ? "text-ink-foreground" : "text-foreground"
-          }`}
+          className={`block font-display text-xl md:text-2xl font-bold tracking-tight ${isFooter ? "text-ink-foreground" : "text-foreground"
+            }`}
         >
           TrueSeva
         </span>
         <span
-          className={`block text-[11px] md:text-xs ${
-            isFooter ? "text-ink-foreground/75" : "text-muted-foreground"
-          }`}
+          className={`block text-[11px] md:text-xs ${isFooter ? "text-ink-foreground/75" : "text-muted-foreground"
+            }`}
         >
           TAFVA Verified Elders Care Initiative
         </span>

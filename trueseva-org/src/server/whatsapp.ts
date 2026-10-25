@@ -45,7 +45,7 @@ function readEnvFile(): Record<string, string> {
       }
       return result;
     }
-  } catch {}
+  } catch { }
   return {};
 }
 
@@ -102,10 +102,10 @@ export async function sendWhatsAppMessage(payload: Record<string, unknown>): Pro
   const askEvaEndpoints = customUrl
     ? [customUrl]
     : [
-        primaryUrl,
-        `https://api.askeva.io/v1/message/send-message?token=${apiKey}`,
-        "https://api.askeva.io/v1/messages",
-      ];
+      primaryUrl,
+      `https://api.askeva.io/v1/message/send-message?token=${apiKey}`,
+      "https://api.askeva.io/v1/messages",
+    ];
 
   let lastError = "";
 
