@@ -3,42 +3,42 @@
         xmlns:xhtml="http://www.w3.org/1999/xhtml"
         xmlns:image="http://www.google.com/schemas/sitemap-image/1.1">
   <url>
-    <loc>https://trueseva.org/</loc>
+    <loc>https://helphomesindia.org/</loc>
     <lastmod>2026-10-12</lastmod>
     <changefreq>weekly</changefreq>
     <priority>1.0</priority>
     <image:image>
-      <image:loc>https://trueseva.org/logo.png</image:loc>
-      <image:title>TrueSeva — TAFVA Verified Elders Care Initiative</image:title>
+      <image:loc>https://helphomesindia.org/logo.png</image:loc>
+      <image:title>HelpHomesIndia — TAFVA Verified Elders Care Initiative</image:title>
       <image:caption>Connecting compassionate donors directly with verified elderly care homes across Tamil Nadu.</image:caption>
     </image:image>
   </url>
   <url>
-    <loc>https://trueseva.org/#about</loc>
+    <loc>https://helphomesindia.org/#about</loc>
     <lastmod>2026-10-12</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
-    <loc>https://trueseva.org/#directory</loc>
+    <loc>https://helphomesindia.org/#directory</loc>
     <lastmod>2026-10-12</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.9</priority>
   </url>
   <url>
-    <loc>https://trueseva.org/#how</loc>
+    <loc>https://helphomesindia.org/#how</loc>
     <lastmod>2026-10-12</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
-    <loc>https://trueseva.org/#gallery</loc>
+    <loc>https://helphomesindia.org/#gallery</loc>
     <lastmod>2026-10-12</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.7</priority>
   </url>
   <url>
-    <loc>https://trueseva.org/#contact</loc>
+    <loc>https://helphomesindia.org/#contact</loc>
     <lastmod>2026-10-12</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.8</priority>

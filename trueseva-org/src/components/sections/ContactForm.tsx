@@ -211,7 +211,7 @@ export function ContactForm() {
             {[
               { i: Building2, k: "Coordinating Organisation", val: "Tamil Nadu Federation of Voluntary Agencies (TAFVA)" },
               { i: Phone, k: "WhatsApp / Helpdesk", val: "+91 91504 08850", href: `https://wa.me/${WHATSAPP_NUMBER}` },
-              { i: Mail, k: "Email", val: "elderscare@trueseva.org", href: "mailto:elderscare@trueseva.org" },
+              { i: Mail, k: "Email", val: "elderscare@helphomesindia.org", href: "mailto:elderscare@helphomesindia.org" },
             ].map((c) => (
               <div key={c.k} className="flex gap-4">
                 <c.i className="mt-1 h-5 w-5 shrink-0 text-turquoise" aria-hidden />

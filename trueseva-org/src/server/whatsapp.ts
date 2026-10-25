@@ -233,7 +233,7 @@ export async function sendWhatsAppText(to: string, messageBody: string): Promise
 export async function sendWhatsAppDocument(
   to: string,
   documentUrl: string,
-  filename = "TrueSeva_Official_Receipt.pdf",
+  filename = "HelpHomesIndia_Official_Receipt.pdf",
   caption?: string,
 ): Promise<WhatsAppSendResult> {
   const recipient = cleanPhone(to);
@@ -312,7 +312,7 @@ export function formatReceiptMessage(enquiry: WhatsAppEnquiryPayload): string {
     "Our field coordination team at TAFVA is currently reviewing your support details. A coordinator will reach out directly to coordinate delivery or next steps.",
     "───────────────────────────",
     "📞 *Coordination Helpdesk:* +91 91504 08850",
-    "🌐 *Website:* https://trueseva.org",
+    "🌐 *Website:* https://helphomesindia.org",
     "━━━━━━━━━━━━━━━━━━━━━━━━━━━",
   ]
     .filter(Boolean)
@@ -458,7 +458,7 @@ const scheduledReceipts = new Set<string>();
 export async function scheduleDelayedReceipt(enquiry: WhatsAppEnquiryPayload): Promise<void> {
   const qstashToken = getEnv("QSTASH_TOKEN");
   const qstashUrl = getEnv("QSTASH_URL", "https://qstash-eu-central-1.upstash.io");
-  const siteUrl = getEnv("PUBLIC_SITE_URL", "https://trueseva-org.vercel.app");
+  const siteUrl = getEnv("PUBLIC_SITE_URL", "https://helphomesindia.org");
   const delaySecEnv = getEnv("WHATSAPP_RECEIPT_DELAY_SECONDS");
   const delayMinEnv = getEnv("WHATSAPP_RECEIPT_DELAY_MINUTES");
   const delayHoursStr = getEnv("WHATSAPP_RECEIPT_DELAY_HOURS", "1");

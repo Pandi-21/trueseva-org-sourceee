@@ -1466,7 +1466,7 @@ function Contact() {
             {[
               { i: Building2, k: "Coordinating Organisation", val: "Tamil Nadu Federation of Voluntary Agencies (TAFVA)" },
               { i: Phone, k: "WhatsApp / Helpdesk", val: "+91 91504 08850", href: `https://wa.me/${WHATSAPP_NUMBER}` },
-              { i: Mail, k: "Email", val: "elderscare@trueseva.org", href: "mailto:elderscare@trueseva.org" },
+              { i: Mail, k: "Email", val: "elderscare@helphomesindia.org", href: "mailto:elderscare@helphomesindia.org" },
             ].map((c) => (
               <div key={c.k} className="flex gap-4">
                 <c.i className="mt-1 h-5 w-5 shrink-0 text-turquoise" aria-hidden />
@@ -2046,7 +2046,7 @@ function Footer() {
               </a>
 
               <a
-                href="mailto:elderscare@trueseva.org"
+                href="mailto:elderscare@helphomesindia.org"
                 className="flex items-center gap-3 rounded-xl border border-ink-foreground/10 bg-ink-foreground/5 p-3 text-sm text-ink-foreground transition hover:border-accent/40 hover:bg-accent/5 group"
               >
                 <div className="flex h-9 w-9 items-center justify-center rounded-lg bg-accent/20 text-accent shrink-0 group-hover:scale-105 transition-transform">
@@ -2054,7 +2054,7 @@ function Footer() {
                 </div>
                 <div>
                   <span className="block text-[11px] font-medium text-ink-foreground/60">Email Support</span>
-                  <span className="font-medium text-ink-foreground">elderscare@trueseva.org</span>
+                  <span className="font-medium text-ink-foreground">elderscare@helphomesindia.org</span>
                 </div>
               </a>
 
@@ -2086,12 +2086,12 @@ const JSON_LD_SCHEMAS = [
     "@type": "NonprofitOrganization",
     "name": "HelpHomesIndia",
     "alternateName": "HelpHomesIndia Elders Care Initiative",
-    "url": "https://trueseva.org",
-    "logo": "https://trueseva.org/logo.png",
-    "image": "https://trueseva.org/hero.jpg",
+    "url": "https://helphomesindia.org",
+    "logo": "https://helphomesindia.org/logo.png",
+    "image": "https://helphomesindia.org/hero.jpg",
     "description": "HelpHomesIndia is a transparent community guidance platform operating under the guidance of the Tamil Nadu Federation of Voluntary Agencies (TAFVA), connecting donors directly with verified Care for All Homes across 10 districts.",
     "telephone": "+91-9150408850",
-    "email": "elderscare@trueseva.org",
+    "email": "elderscare@helphomesindia.org",
     "address": {
       "@type": "PostalAddress",
       "addressRegion": "Tamil Nadu",
@@ -2117,7 +2117,7 @@ const JSON_LD_SCHEMAS = [
     "@context": "https://schema.org",
     "@type": "WebSite",
     "name": "HelpHomesIndia",
-    "url": "https://trueseva.org"
+    "url": "https://helphomesindia.org"
   },
   {
     "@context": "https://schema.org",

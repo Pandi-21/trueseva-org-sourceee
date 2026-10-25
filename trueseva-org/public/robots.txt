@@ -13,5 +13,5 @@ Allow: /
 User-agent: *
 Allow: /
 
-Sitemap: https://trueseva.org/sitemap.xml
-Host: https://trueseva.org
+Sitemap: https://helphomesindia.org/sitemap.xml
+Host: https://helphomesindia.org

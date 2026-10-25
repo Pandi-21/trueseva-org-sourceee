@@ -77,7 +77,7 @@ export function Footer() {
               </a>
 
               <a
-                href="mailto:elderscare@trueseva.org"
+                href="mailto:elderscare@helphomesindia.org"
                 className="flex items-center gap-3 rounded-xl border border-ink-foreground/10 bg-ink-foreground/5 p-3 text-sm text-ink-foreground transition hover:border-accent/40 hover:bg-accent/5 group"
               >
                 <div className="flex h-9 w-9 items-center justify-center rounded-lg bg-accent/20 text-accent shrink-0 group-hover:scale-105 transition-transform">
@@ -85,7 +85,7 @@ export function Footer() {
                 </div>
                 <div>
                   <span className="block text-[11px] font-medium text-ink-foreground/60">Email Support</span>
-                  <span className="font-medium text-ink-foreground">elderscare@trueseva.org</span>
+                  <span className="font-medium text-ink-foreground">elderscare@helphomesindia.org</span>
                 </div>
               </a>
 
