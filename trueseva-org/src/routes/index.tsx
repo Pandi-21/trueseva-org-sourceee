@@ -5,7 +5,7 @@ import {
   Building2, Loader2, CheckCircle2, AlertCircle, ImageIcon,
   ChevronDown, ChevronUp, Users, ShoppingBag, Clock, FileText,
   AlertTriangle, Newspaper, ArrowRight, Info, Sparkles,
-  ChevronLeft, ChevronRight, Maximize2, QrCode, Copy, Check, ExternalLink
+  ChevronLeft, ChevronRight, Maximize2, QrCode, Copy, Check
 } from "lucide-react";
 import hero from "@/assets/image12.jpeg";
 import bannerImg from "@/assets/banners.png";
@@ -1775,15 +1775,6 @@ function Contact() {
                           </>
                         )}
                       </button>
-
-                      {/* Open in UPI App Link (touch devices only; upi:// does nothing on desktop) */}
-                      <a
-                        href={payment.upiLink}
-                        className="hidden [@media(pointer:coarse)]:inline-flex items-center gap-1.5 rounded-lg bg-emerald-600 hover:bg-emerald-700 px-3.5 py-2 text-xs font-semibold text-white shadow-xs transition-all cursor-pointer"
-                      >
-                        <ExternalLink className="h-3.5 w-3.5" />
-                        <span>Open UPI App (enter amount)</span>
-                      </a>
                     </div>
 
                     {/* Simple Instructions */}
@@ -1793,7 +1784,7 @@ function Contact() {
                         <span>Direct Support Guidelines:</span>
                       </p>
                       <p>
-                        1. Scan the QR code or tap "Open UPI App", then enter the amount ({v.amount ? `₹${Number(v.amount).toLocaleString("en-IN")}` : "entered above"}).
+                        1. Scan the QR code or copy the UPI ID, then enter the amount ({v.amount ? `₹${Number(v.amount).toLocaleString("en-IN")}` : "entered above"}).
                       </p>
                       <p>
                         2. All donations for verified homes are received into this audited trust account with zero commissions.
