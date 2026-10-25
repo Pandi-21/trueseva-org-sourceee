@@ -6,6 +6,8 @@ export const SUPPORT_TYPES = [
   "Other Direct Support",
 ] as const;
 
+export type PaymentAccountId = "rojavanam" | "humanity-trust";
+
 export interface SmileHome {
   id: number;
   sNo: number;
@@ -14,7 +16,9 @@ export interface SmileHome {
   label: string;
   address: string;
   phone: string;
-  email: string;
+  email?: string;
+  /** Donation account for this home; defaults to the Rojavanam trust account. */
+  paymentAccount?: PaymentAccountId;
 }
 
 export const CENTRAL_PHONE = "9150408850";
@@ -180,6 +184,16 @@ export const SMILE_HOMES: SmileHome[] = [
     phone: CENTRAL_PHONE,
     email: "rojavanam.trust123@gmail.com",
   },
+  {
+    id: 17,
+    sNo: 17,
+    city: "Theni",
+    name: "Manithaneyam Orphanage Home",
+    label: "Manithaneyam Orphanage Home – Manithaneya Kappagam, Theni",
+    address: "Manithaneya Kappagam, Theni",
+    phone: CENTRAL_PHONE,
+    paymentAccount: "humanity-trust",
+  },
 ];
 
 export const TN_DISTRICTS = [
@@ -190,6 +204,7 @@ export const TN_DISTRICTS = [
   "Palani",
   "Rameswaram",
   "Tenkasi",
+  "Theni",
   "Tiruchendur",
   "Tiruchirappalli",
   "Tirunelveli",
@@ -232,6 +247,9 @@ export const DISTRICT_NGOS: Record<string, string[]> = {
   ],
   Tenkasi: [
     "Rojavanam Oldage Home – Courtallam (Five Falls Road)",
+  ],
+  Theni: [
+    "Manithaneyam Orphanage Home – Manithaneya Kappagam, Theni",
   ],
   Tiruchendur: [
     "Brindavanam SMILE Oldage Home – Near Municipality, Tiruchendur",
@@ -372,7 +390,7 @@ export function validateEnquiry(v: EnquiryInput): Partial<Record<keyof EnquiryIn
   
   // NGO
   if (!v.ngo.trim()) {
-    e.ngo = "Please choose a SMILE Elderly Care Home.";
+    e.ngo = "Please choose a Care for All Home.";
   }
   
   // Support Type

@@ -16,7 +16,7 @@ export function DiwaliBanner() {
             >
               <img
                 src={bannerImg}
-                alt="இந்த தீபாவளியில் ஆதரவற்றோர் வாழ்வில் ஒளியேற்றுங்கள் - TrueSeva Diwali Campaign Banner"
+                alt="இந்த தீபாவளியில் ஆதரவற்றோர் வாழ்வில் ஒளியேற்றுங்கள் - HelpHomesIndia Diwali Campaign Banner"
                 width={1672}
                 height={941}
                 loading="lazy"

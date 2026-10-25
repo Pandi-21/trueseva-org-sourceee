@@ -10,6 +10,7 @@ import {
 import hero from "@/assets/image12.jpeg";
 import bannerImg from "@/assets/banners.png";
 import qrCodeImg from "@/assets/rojavanam-qr.jpg";
+import humanityTrustQrImg from "@/assets/humanity-trust-qr.jpg";
 import about from "@/assets/image13.jpeg";
 import logo from "@/assets/logo.png";
 import img1 from "@/assets/image1.jpeg";
@@ -35,9 +36,49 @@ import {
   validateEnquiry,
   type EnquiryInput,
   type SmileHome,
+  type PaymentAccountId,
 } from "@/lib/enquiry";
 
 export const WHATSAPP_NUMBER = "919150408850"; // Official WhatsApp Helpdesk Number
+
+type PaymentAccount = {
+  beneficiary: string;
+  upiId: string;
+  bank: string;
+  badge: string;
+  apps: string;
+  qrImg: string;
+  qrAlt: string;
+  /** Exact payload decoded from the bank-issued QR. Merchant VPAs need its mc/tr or signature fields, so never rebuild or append to it. */
+  upiLink: string;
+  accountNo?: string;
+  ifsc?: string;
+};
+
+const PAYMENT_ACCOUNTS: Record<PaymentAccountId, PaymentAccount> = {
+  rojavanam: {
+    beneficiary: "M/S.ROJAVANAM",
+    upiId: "ROJAVANAMTRUST@icici",
+    bank: "ICICI Bank eazypay",
+    badge: "ICICI Bank · eazypay",
+    apps: "GPay, PhonePe, Paytm, BHIM, iMobile",
+    qrImg: qrCodeImg,
+    qrAlt: "ICICI eazypay QR Code - M/S ROJAVANAM (ROJAVANAMTRUST@icici)",
+    upiLink: "upi://pay?pa=ROJAVANAMTRUST@icici&pn=M/S.ROJAVANAM&tr=EZYS7598841700&cu=INR&mc=5172",
+  },
+  "humanity-trust": {
+    beneficiary: "Manithaneya Kappagam The Humanity Trust",
+    upiId: "EZE0440429@CUB",
+    bank: "City Union Bank",
+    badge: "City Union Bank · UPI",
+    apps: "GPay, PhonePe, Paytm, BHIM",
+    qrImg: humanityTrustQrImg,
+    qrAlt: "City Union Bank QR Code - Humanity Trust (EZE0440429@CUB)",
+    upiLink: "upi://pay?pa=EzE0440429@CUB&pn=HUMANITY%20TRUST&cu=INR&mode=02&sign=ZSPli8DuxCwxuWNdXg38I7bRGbc+YzvzpShMebtKHt4=&orgid=932895441&signature=MzkwMjEwMDllYzMwZjhlZWFiZGY5OThkMjc4NGQ5OGZhNzM4M2YwYzM2ZmExODQ2ZjkwM2Y4MzIxYjFiZDM2YQ==",
+    accountNo: "500101010833112",
+    ifsc: "CIUB0000137",
+  },
+};
 
 export const Route = createFileRoute("/")({
   head: () => ({
@@ -47,10 +88,10 @@ export const Route = createFileRoute("/")({
       { rel: "shortcut icon", type: "image/png", href: "/logo.png" },
     ],
     meta: [
-      { title: "TrueSeva — Light Up Lives of the Destitute This Diwali | Verified Homes in Tamil Nadu" },
-      { name: "description", content: "This Diwali, light up the lives of the destitute. Find genuinely run destitute and elderly care homes in your district across Tamil Nadu. Direct monetary assistance or material support with zero intermediaries." },
-      { property: "og:title", content: "Light Up the Lives of the Destitute This Diwali | TrueSeva" },
-      { property: "og:description", content: "Find genuinely run destitute and elderly care homes in your district. Direct monetary or material support with zero commission, field-verified by TAFVA." },
+      { title: "HelpHomesIndia — Light Up Lives of the Destitute This Diwali | Verified Homes in Tamil Nadu" },
+      { name: "description", content: "This Diwali, light up the lives of the destitute. Find genuinely run destitute and Care for All Homes in your district across Tamil Nadu. Direct monetary assistance or material support with zero intermediaries." },
+      { property: "og:title", content: "Light Up the Lives of the Destitute This Diwali | HelpHomesIndia" },
+      { property: "og:description", content: "Find genuinely run destitute and Care for All Homes in your district. Direct monetary or material support with zero commission, field-verified by TAFVA." },
       { property: "og:image", content: bannerImg },
       { property: "og:type", content: "website" },
       { name: "twitter:card", content: "summary_large_image" },
@@ -144,7 +185,7 @@ function Logo({ className = "h-12 w-12 md:h-14 md:w-14" }: { className?: string 
   return (
     <img
       src={logo}
-      alt="TrueSeva Logo"
+      alt="HelpHomesIndia Logo"
       width={56}
       height={56}
       decoding="async"
@@ -163,7 +204,7 @@ function Brand({ isFooter = false }: { isFooter?: boolean }) {
       <Logo className="h-12 w-12 md:h-14 md:w-14 transition-transform duration-300 group-hover:scale-105" />
       <span className="leading-tight">
         <span className={`block font-display text-xl md:text-2xl font-bold tracking-tight ${isFooter ? "text-ink-foreground" : "text-foreground"}`}>
-          TrueSeva
+          HelpHomesIndia
         </span>
         <span className={`block text-[11px] md:text-xs ${isFooter ? "text-ink-foreground/75" : "text-muted-foreground"}`}>
           TAFVA Verified Elders Care Initiative
@@ -281,7 +322,7 @@ function Hero() {
             Light Up the Lives of the <span className="text-primary">Destitute This Diwali.</span> 🪔
           </h1>
           <p className="mt-4 max-w-lg text-sm sm:text-base md:text-lg leading-relaxed text-muted-foreground">
-            Find genuinely run destitute and elderly care homes in your district across Tamil Nadu. Support them directly with monetary assistance or material donations like new clothing and essential groceries—with 100% transparency and zero intermediaries.
+            Find genuinely run destitute and Care for All Homes in your district across Tamil Nadu. Support them directly with monetary assistance or material donations like new clothing and essential groceries—with 100% transparency and zero intermediaries.
           </p>
           <p className="mt-3 text-xs sm:text-sm md:text-base font-medium text-primary flex items-center gap-2">
             <span aria-hidden="true">✨</span>
@@ -336,7 +377,7 @@ function DiwaliBanner() {
             >
               <img
                 src={bannerImg}
-                alt="இந்த தீபாவளியில் ஆதரவற்றோர் வாழ்வில் ஒளியேற்றுங்கள் - TrueSeva Diwali Campaign Banner"
+                alt="இந்த தீபாவளியில் ஆதரவற்றோர் வாழ்வில் ஒளியேற்றுங்கள் - HelpHomesIndia Diwali Campaign Banner"
                 width={1672}
                 height={941}
                 loading="lazy"
@@ -358,7 +399,7 @@ function About() {
         <Reveal className="lg:col-span-5">
           <img
             src={about}
-            alt="Supporting and honoring elderly care home residents in Tamil Nadu"
+            alt="Supporting and honoring Care for All Home residents in Tamil Nadu"
             loading="lazy"
             decoding="async"
             width={800}
@@ -370,10 +411,10 @@ function About() {
           <p className="eyebrow">About Us</p>
           <h2 className="mt-4 text-4xl font-medium md:text-5xl">A Pilot Initiative for Elderly Care</h2>
           <div className="mt-8 space-y-5 text-lg leading-relaxed text-foreground/85">
-            <p className="font-display text-2xl leading-snug text-foreground">TrueSeva is a transparent community guidance platform operating under the guidance of the Tamil Nadu Federation of Voluntary Agencies (TAFVA).</p>
-            <p>Before developing a comprehensive statewide fundraising platform in the future, this pilot initiative identifies 10 elderly care homes across 10 districts for direct, transparent support.</p>
+            <p className="font-display text-2xl leading-snug text-foreground">HelpHomesIndia is a transparent community guidance platform operating under the guidance of the Tamil Nadu Federation of Voluntary Agencies (TAFVA).</p>
+            <p>Before developing a comprehensive statewide fundraising platform in the future, this pilot initiative identifies 10 Care for All Homes across 10 districts for direct, transparent support.</p>
             <p>The initiative focuses on actual needs: new clothing, essential kitchen groceries, and direct financial assistance for food and medical expenses.</p>
-            <p className="border-l-2 border-primary pl-5">TrueSeva does not collect monetary or material donations from the public. It acts as a connecting platform between donors and elderly care homes, enabling direct support without intermediaries.</p>
+            <p className="border-l-2 border-primary pl-5">HelpHomesIndia does not collect monetary or material donations from the public. It acts as a connecting platform between donors and Care for All Homes, enabling direct support without intermediaries.</p>
           </div>
         </Reveal>
       </div>
@@ -385,7 +426,7 @@ const MISSION = [
   { icon: Shirt, t: "Needs-Based Support", d: "Match clothing quantities to the number of elderly men and women." },
   { icon: Leaf, t: "Nutritious Food Security", d: "Encourage suitable meals and essential groceries." },
   { icon: ShieldCheck, t: "Field Verification", d: "Recommend eligible homes assessed through actual fieldwork." },
-  { icon: Handshake, t: "Zero Commission, Direct Support", d: "Connect donors directly with elderly care homes." },
+  { icon: Handshake, t: "Zero Commission, Direct Support", d: "Connect donors directly with Care for All Homes." },
 ];
 
 function Vision() {
@@ -417,7 +458,7 @@ function Vision() {
   );
 }
 
-// ==================== SECTION: ELDERLY HOMES DIRECTORY ====================
+// ==================== SECTION: CARE FOR ALL HOMES DIRECTORY ====================
 
 function ElderlyHomesDirectory() {
   const [selectedDistrict, setSelectedDistrict] = useState<string>("");
@@ -451,10 +492,10 @@ function ElderlyHomesDirectory() {
     <section id="directory" className="pt-14 pb-14 lg:pt-16 lg:pb-16 bg-muted/20 border-t border-border/50">
       <div className="mx-auto max-w-7xl px-5 lg:px-8">
         <Reveal className="max-w-3xl">
-          <p className="eyebrow">Elderly Homes Directory</p>
-          <h2 className="mt-4 text-4xl font-medium md:text-5xl">Explore SMILE Elderly Homes</h2>
+          <p className="eyebrow">Care for All Homes Directory</p>
+          <h2 className="mt-4 text-4xl font-medium md:text-5xl">Explore Care for All Homes</h2>
           <p className="mt-4 text-lg text-muted-foreground">
-            Filter by district to find verified SMILE elderly care homes in Tamil Nadu. Connect directly to provide transparent support with dignity and care.
+            Filter by district to find verified SMILE Care for All Homes in Tamil Nadu. Connect directly to provide transparent support with dignity and care.
           </p>
         </Reveal>
 
@@ -537,13 +578,13 @@ function ElderlyHomesDirectory() {
                 </div>
                 <h4 className="mt-4 text-lg font-semibold text-foreground">Select a District to View Homes</h4>
                 <p className="mt-2 text-sm text-muted-foreground max-w-md mx-auto">
-                  Choose a district from the dropdown filter above to see verified SMILE elderly care homes in that region.
+                  Choose a district from the dropdown filter above to see verified SMILE Care for All Homes in that region.
                 </p>
               </div>
             </Reveal>
           ) : displayedHomes.length === 0 ? (
             <div className="rounded-2xl border bg-card p-10 text-center">
-              <p className="text-muted-foreground">No elderly care homes found for the selected filter.</p>
+              <p className="text-muted-foreground">No Care for All Homes found for the selected filter.</p>
             </div>
           ) : (
             <div>
@@ -594,16 +635,18 @@ function ElderlyHomesDirectory() {
                             +91 {home.phone}
                           </a>
                         </div>
-                        <div className="flex items-center gap-2 pt-1 border-t border-border/40">
-                          <Mail className="h-3.5 w-3.5 text-primary shrink-0" />
-                          <span className="text-muted-foreground">Email:</span>
-                          <a
-                            href={`mailto:${home.email}`}
-                            className="text-muted-foreground hover:text-primary transition-colors truncate text-xs ml-auto max-w-[180px]"
-                          >
-                            {home.email}
-                          </a>
-                        </div>
+                        {home.email && (
+                          <div className="flex items-center gap-2 pt-1 border-t border-border/40">
+                            <Mail className="h-3.5 w-3.5 text-primary shrink-0" />
+                            <span className="text-muted-foreground">Email:</span>
+                            <a
+                              href={`mailto:${home.email}`}
+                              className="text-muted-foreground hover:text-primary transition-colors truncate text-xs ml-auto max-w-[180px]"
+                            >
+                              {home.email}
+                            </a>
+                          </div>
+                        )}
                       </div>
 
                       {/* Status */}
@@ -615,6 +658,12 @@ function ElderlyHomesDirectory() {
                             <span className="relative inline-flex rounded-full h-2 w-2 bg-emerald-500"></span>
                           </span>
                           <span>Verified Home</span>
+                        </span>
+                      </div>
+                      <div className="mt-2 flex items-start gap-2 rounded-lg border border-emerald-500/25 bg-emerald-500/5 px-3 py-2 text-[11px] leading-snug">
+                        <ShieldCheck className="mt-px h-3.5 w-3.5 shrink-0 text-emerald-600 dark:text-emerald-400" />
+                        <span className="font-semibold text-emerald-700 dark:text-emerald-400">
+                          Approved by Government of India · Tamil Nadu Member
                         </span>
                       </div>
 
@@ -646,7 +695,7 @@ function ElderlyHomesDirectory() {
 const STEPS = [
   {
     t: "Explore",
-    d: "Discover an elderly home's current essential needs and available information.",
+    d: "Discover a Care for All Home's current essential needs and available information.",
   },
   {
     t: "Confirm",
@@ -654,7 +703,7 @@ const STEPS = [
   },
   {
     t: "Support Directly",
-    d: "Send clothing and groceries directly to the elderly home or transfer financial assistance directly to its verified official trust account.",
+    d: "Send clothing and groceries directly to the Care for All Home or transfer financial assistance directly to its verified official trust account.",
   },
   {
     t: "Follow Up",
@@ -922,7 +971,7 @@ function NewsEvents() {
   const news = [
     {
       title: "Diwali Elderly Care Pilot Launch",
-      description: "Preparation of detailed essential-needs lists for 10 elderly care homes across 10 districts of Tamil Nadu.",
+      description: "Preparation of detailed essential-needs lists for 10 Care for All Homes across 10 districts of Tamil Nadu.",
       status: "In Progress",
       statusType: "progress",
       statusClass: "bg-primary/10 text-primary border-primary/25",
@@ -936,7 +985,7 @@ function NewsEvents() {
     },
     {
       title: "A Future Statewide Initiative",
-      description: "Plans to explore a broader platform connecting eligible elderly care homes across Tamil Nadu following the pilot initiative.",
+      description: "Plans to explore a broader platform connecting eligible Care for All Homes across Tamil Nadu following the pilot initiative.",
       status: "Planned",
       statusType: "planned",
       statusClass: "bg-muted text-muted-foreground border-border",
@@ -1123,7 +1172,7 @@ function Gallery() {
           <p className="eyebrow">Gallery</p>
           <h2 className="mt-4 text-4xl font-medium md:text-5xl">A Closer Look at the Initiative</h2>
           <p className="mt-4 text-base md:text-lg text-muted-foreground max-w-3xl">
-            Real moments from verified elderly care homes across Tamil Nadu — highlighting compassionate care, healthcare support, community visits, and dignified living.
+            Real moments from verified Care for All Homes across Tamil Nadu — highlighting compassionate care, healthcare support, community visits, and dignified living.
           </p>
         </Reveal>
 
@@ -1310,6 +1359,7 @@ function Contact() {
   }, []);
 
   const selectedHome = getSmileHomeDetails(v.ngo, v.district);
+  const payment = PAYMENT_ACCOUNTS[selectedHome?.paymentAccount ?? "rojavanam"];
 
   const clearError = (k: keyof EnquiryInput) => {
     setErrors((prev) => {
@@ -1338,7 +1388,7 @@ function Contact() {
 
     // Format pre-filled WhatsApp message for manual chat link
     const lines = [
-      "New Support Enquiry - TrueSeva",
+      "New Support Enquiry - HelpHomesIndia",
       "",
       `Name: ${v.full_name.trim()}`,
       `Mobile: +91 ${normaliseMobile(v.mobile)}`,
@@ -1353,7 +1403,7 @@ function Contact() {
     if (amountVal) lines.push(`Amount: ${amountVal}`);
     if (v.message.trim()) lines.push(`Message: ${v.message.trim()}`);
     lines.push("");
-    lines.push("Sent via TrueSeva initiative portal");
+    lines.push("Sent via HelpHomesIndia initiative portal");
     const waUrl = `https://wa.me/${WHATSAPP_NUMBER}?text=${encodeURIComponent(lines.join("\n"))}`;
 
     try {
@@ -1411,7 +1461,7 @@ function Contact() {
         <Reveal className="lg:col-span-5">
           <p className="eyebrow">Contact Us</p>
           <h2 className="mt-4 text-4xl font-medium md:text-5xl">Help Connect Support With Need</h2>
-          <p className="mt-5 text-lg text-muted-foreground">Have questions about supporting an elderly care home? Share your details and the type of assistance you are interested in.</p>
+          <p className="mt-5 text-lg text-muted-foreground">Have questions about supporting a Care for All Home? Share your details and the type of assistance you are interested in.</p>
           <div className="mt-10 space-y-6">
             {[
               { i: Building2, k: "Coordinating Organisation", val: "Tamil Nadu Federation of Voluntary Agencies (TAFVA)" },
@@ -1435,7 +1485,7 @@ function Contact() {
               <span className="eyebrow">Direct Assistance</span>
               <h3 className="text-xl md:text-2xl font-bold text-foreground">Support Enquiry Form</h3>
               <p className="mt-1 text-xs text-muted-foreground">
-                Submit your details to coordinate transparent, direct support with verified elderly homes.
+                Submit your details to coordinate transparent, direct support with verified Care for All Homes.
               </p>
             </div>
 
@@ -1525,15 +1575,21 @@ function Contact() {
                   <MapPin className="h-3.5 w-3.5 text-primary shrink-0" />
                   <span>{selectedHome.label.replace(selectedHome.name + " – ", "")}</span>
                 </p>
+                <p className="flex items-center gap-1.5 text-xs font-semibold text-emerald-700 dark:text-emerald-400">
+                  <ShieldCheck className="h-3.5 w-3.5 shrink-0" />
+                  <span>Verified Home · Approved by Government of India · Tamil Nadu Member</span>
+                </p>
                 <div className="flex flex-wrap gap-x-5 gap-y-1 text-muted-foreground pt-1.5 border-t border-primary/15">
                   <a href={`tel:${selectedHome.phone}`} className="flex items-center gap-1 hover:text-primary font-medium">
                     <Phone className="h-3.5 w-3.5 text-primary" />
                     <span>+91 {selectedHome.phone}</span>
                   </a>
-                  <a href={`mailto:${selectedHome.email}`} className="flex items-center gap-1 hover:text-primary font-medium">
-                    <Mail className="h-3.5 w-3.5 text-primary" />
-                    <span>{selectedHome.email}</span>
-                  </a>
+                  {selectedHome.email && (
+                    <a href={`mailto:${selectedHome.email}`} className="flex items-center gap-1 hover:text-primary font-medium">
+                      <Mail className="h-3.5 w-3.5 text-primary" />
+                      <span>{selectedHome.email}</span>
+                    </a>
+                  )}
                 </div>
               </div>
             )}
@@ -1633,7 +1689,7 @@ function Contact() {
                     </div>
                   </div>
                   <span className="text-[11px] font-semibold text-amber-900/90 dark:text-amber-200 bg-amber-100/90 dark:bg-amber-900/50 px-2.5 py-1 rounded-md border border-amber-300/60 dark:border-amber-700/50">
-                    ICICI Bank · eazypay
+                    {payment.badge}
                   </span>
                 </div>
 
@@ -1646,8 +1702,8 @@ function Contact() {
                       title="Click to view full size QR code"
                     >
                       <img
-                        src={qrCodeImg}
-                        alt="ICICI eazypay QR Code - M/S ROJAVANAM (ROJAVANAMTRUST@icici)"
+                        src={payment.qrImg}
+                        alt={payment.qrAlt}
                         className="w-52 h-auto max-w-full rounded-xl object-contain select-none"
                       />
                       <div className="absolute inset-0 flex items-center justify-center bg-black/40 opacity-0 group-hover:opacity-100 transition-opacity rounded-xl">
@@ -1666,19 +1722,31 @@ function Contact() {
                     <div className="rounded-xl border border-border/80 bg-background/95 p-3.5 space-y-2">
                       <div className="flex items-center justify-between text-xs">
                         <span className="text-muted-foreground font-medium">Beneficiary / Merchant Name</span>
-                        <span className="font-bold text-foreground">M/S.ROJAVANAM</span>
+                        <span className="font-bold text-foreground text-right">{payment.beneficiary}</span>
                       </div>
                       <div className="flex items-center justify-between text-xs pt-1.5 border-t border-border/50">
                         <span className="text-muted-foreground font-medium">Official UPI ID (VPA)</span>
-                        <span className="font-mono font-bold text-primary text-sm select-all">ROJAVANAMTRUST@icici</span>
+                        <span className="font-mono font-bold text-primary text-sm select-all">{payment.upiId}</span>
                       </div>
+                      {payment.accountNo && (
+                        <div className="flex items-center justify-between text-xs pt-1.5 border-t border-border/50">
+                          <span className="text-muted-foreground font-medium">Account Number</span>
+                          <span className="font-mono font-bold text-foreground select-all">{payment.accountNo}</span>
+                        </div>
+                      )}
+                      {payment.ifsc && (
+                        <div className="flex items-center justify-between text-xs pt-1.5 border-t border-border/50">
+                          <span className="text-muted-foreground font-medium">IFSC Code</span>
+                          <span className="font-mono font-bold text-foreground select-all">{payment.ifsc}</span>
+                        </div>
+                      )}
                       <div className="flex items-center justify-between text-xs pt-1.5 border-t border-border/50">
                         <span className="text-muted-foreground font-medium">Banking Partner</span>
-                        <span className="font-semibold text-foreground">ICICI Bank eazypay</span>
+                        <span className="font-semibold text-foreground">{payment.bank}</span>
                       </div>
                       <div className="flex items-center justify-between text-xs pt-1.5 border-t border-border/50">
                         <span className="text-muted-foreground font-medium">Accepted Apps</span>
-                        <span className="text-muted-foreground text-[11px]">GPay, PhonePe, Paytm, BHIM, iMobile</span>
+                        <span className="text-muted-foreground text-[11px]">{payment.apps}</span>
                       </div>
                     </div>
 
@@ -1688,7 +1756,7 @@ function Contact() {
                         type="button"
                         onClick={() => {
                           if (typeof navigator !== "undefined" && navigator.clipboard) {
-                            navigator.clipboard.writeText("ROJAVANAMTRUST@icici");
+                            navigator.clipboard.writeText(payment.upiId);
                             setCopiedUpi(true);
                             setTimeout(() => setCopiedUpi(false), 2500);
                           }
@@ -1708,13 +1776,13 @@ function Contact() {
                         )}
                       </button>
 
-                      {/* Open in UPI App Link */}
+                      {/* Open in UPI App Link (touch devices only; upi:// does nothing on desktop) */}
                       <a
-                        href={`upi://pay?pa=ROJAVANAMTRUST@icici&pn=M%2FS%20ROJAVANAM&cu=INR${v.amount ? `&am=${v.amount}` : ""}&tn=${encodeURIComponent(`TrueSeva Support - ${selectedHome?.name || "Elders Care"}`)}`}
-                        className="inline-flex items-center gap-1.5 rounded-lg bg-emerald-600 hover:bg-emerald-700 px-3.5 py-2 text-xs font-semibold text-white shadow-xs transition-all cursor-pointer"
+                        href={payment.upiLink}
+                        className="hidden [@media(pointer:coarse)]:inline-flex items-center gap-1.5 rounded-lg bg-emerald-600 hover:bg-emerald-700 px-3.5 py-2 text-xs font-semibold text-white shadow-xs transition-all cursor-pointer"
                       >
                         <ExternalLink className="h-3.5 w-3.5" />
-                        <span>Pay via UPI App</span>
+                        <span>Open UPI App (enter amount)</span>
                       </a>
                     </div>
 
@@ -1725,7 +1793,7 @@ function Contact() {
                         <span>Direct Support Guidelines:</span>
                       </p>
                       <p>
-                        1. Scan the QR code or pay via any UPI app with the amount ({v.amount ? `₹${Number(v.amount).toLocaleString("en-IN")}` : "entered above"}).
+                        1. Scan the QR code or tap "Open UPI App", then enter the amount ({v.amount ? `₹${Number(v.amount).toLocaleString("en-IN")}` : "entered above"}).
                       </p>
                       <p>
                         2. All donations for verified homes are received into this audited trust account with zero commissions.
@@ -1759,7 +1827,7 @@ function Contact() {
                     </p>
                     <p className="flex items-center gap-1.5">
                       <Clock className="h-3.5 w-3.5 text-primary shrink-0" />
-                      <span>An official TrueSeva acknowledgement receipt will be sent automatically to your WhatsApp in 1–2 hours.</span>
+                      <span>An official HelpHomesIndia acknowledgement receipt will be sent automatically to your WhatsApp in 1–2 hours.</span>
                     </p>
                   </div>
                   {feedback.manualWaUrl && (
@@ -1824,12 +1892,12 @@ function Contact() {
               </button>
               <div className="text-center mb-3 pr-6">
                 <h3 className="font-bold text-base text-stone-900">Scan to Pay via UPI</h3>
-                <p className="text-xs text-stone-600 font-mono">M/S.ROJAVANAM · ROJAVANAMTRUST@icici</p>
+                <p className="text-xs text-stone-600 font-mono">{payment.beneficiary} · {payment.upiId}</p>
               </div>
               <div className="overflow-hidden rounded-xl border border-stone-200 bg-stone-50 p-2">
                 <img
-                  src={qrCodeImg}
-                  alt="ICICI eazypay QR Code Full View"
+                  src={payment.qrImg}
+                  alt={`${payment.qrAlt} - Full View`}
                   className="w-full h-auto rounded-lg object-contain select-none"
                 />
               </div>
@@ -1838,7 +1906,7 @@ function Contact() {
                   type="button"
                   onClick={() => {
                     if (typeof navigator !== "undefined" && navigator.clipboard) {
-                      navigator.clipboard.writeText("ROJAVANAMTRUST@icici");
+                      navigator.clipboard.writeText(payment.upiId);
                       setCopiedUpi(true);
                       setTimeout(() => setCopiedUpi(false), 2500);
                     }
@@ -1853,7 +1921,7 @@ function Contact() {
                   ) : (
                     <>
                       <Copy className="h-4 w-4" />
-                      <span>Copy ROJAVANAMTRUST@icici</span>
+                      <span>Copy {payment.upiId}</span>
                     </>
                   )}
                 </button>
@@ -1875,7 +1943,7 @@ function Contact() {
 
 function FloatingWhatsApp() {
   const defaultMsg = encodeURIComponent(
-    "Hello TrueSeva! I would like to know more about supporting elderly care homes across Tamil Nadu."
+    "Hello HelpHomesIndia! I would like to know more about supporting Care for All Homes across Tamil Nadu."
   );
 
   return (
@@ -1884,7 +1952,7 @@ function FloatingWhatsApp() {
         href={`https://wa.me/${WHATSAPP_NUMBER}?text=${defaultMsg}`}
         target="_blank"
         rel="noopener noreferrer"
-        aria-label="Chat with TrueSeva on WhatsApp"
+        aria-label="Chat with HelpHomesIndia on WhatsApp"
         className="group relative flex h-14 w-14 items-center justify-center rounded-full bg-[#25D366] text-white shadow-xl transition-all duration-300 hover:scale-110 hover:shadow-2xl hover:bg-[#20bd5a] focus:outline-none focus:ring-4 focus:ring-[#25D366]/40 active:scale-95"
       >
         {/* Animated Ripple Pulse */}
@@ -1916,7 +1984,7 @@ function Footer() {
           <div className="lg:col-span-5 space-y-4">
             <Brand isFooter />
             <p className="text-sm leading-relaxed text-ink-foreground/80 max-w-md">
-              TrueSeva is a transparent community guidance platform operating under the guidance of the <strong className="text-ink-foreground">Tamil Nadu Federation of Voluntary Agencies (TAFVA)</strong>. Connecting donors directly with verified elderly care homes across 10 districts.
+              HelpHomesIndia is a transparent community guidance platform operating under the guidance of the <strong className="text-ink-foreground">Tamil Nadu Federation of Voluntary Agencies (TAFVA)</strong>. Connecting donors directly with verified Care for All Homes across 10 districts.
             </p>
             <div className="inline-flex items-center gap-2 rounded-full border border-emerald-500/30 bg-emerald-500/10 px-3.5 py-1.5 text-xs font-medium text-emerald-400">
               <span className="h-2 w-2 rounded-full bg-emerald-400 animate-pulse" />
@@ -1934,7 +2002,7 @@ function Footer() {
                 { id: "home", label: "Home" },
                 { id: "about", label: "About Us" },
                 { id: "vision", label: "Vision & Mission" },
-                { id: "directory", label: "Elderly Homes Directory" },
+                { id: "directory", label: "Care for All Homes Directory" },
                 { id: "how", label: "How It Works" },
                 { id: "gallery", label: "Photo Gallery" },
                 { id: "contact", label: "Contact Us" },
@@ -2005,7 +2073,7 @@ function Footer() {
 
         {/* Bottom Bar */}
         <div className="mt-12 pt-6 border-t border-ink-foreground/10 text-xs text-ink-foreground/60 text-center sm:text-left">
-          <p>© 2026 TrueSeva Initiative. Guided by Tamil Nadu Federation of Voluntary Agencies (TAFVA). All rights reserved to VND Tech.</p>
+          <p>© 2026 HelpHomesIndia Initiative. Guided by Tamil Nadu Federation of Voluntary Agencies (TAFVA). All rights reserved to VND Tech.</p>
         </div>
       </div>
     </footer>
@@ -2016,12 +2084,12 @@ const JSON_LD_SCHEMAS = [
   {
     "@context": "https://schema.org",
     "@type": "NonprofitOrganization",
-    "name": "TrueSeva",
-    "alternateName": "TrueSeva Elders Care Initiative",
+    "name": "HelpHomesIndia",
+    "alternateName": "HelpHomesIndia Elders Care Initiative",
     "url": "https://trueseva.org",
     "logo": "https://trueseva.org/logo.png",
     "image": "https://trueseva.org/hero.jpg",
-    "description": "TrueSeva is a transparent community guidance platform operating under the guidance of the Tamil Nadu Federation of Voluntary Agencies (TAFVA), connecting donors directly with verified elderly care homes across 10 districts.",
+    "description": "HelpHomesIndia is a transparent community guidance platform operating under the guidance of the Tamil Nadu Federation of Voluntary Agencies (TAFVA), connecting donors directly with verified Care for All Homes across 10 districts.",
     "telephone": "+91-9150408850",
     "email": "elderscare@trueseva.org",
     "address": {
@@ -2048,7 +2116,7 @@ const JSON_LD_SCHEMAS = [
   {
     "@context": "https://schema.org",
     "@type": "WebSite",
-    "name": "TrueSeva",
+    "name": "HelpHomesIndia",
     "url": "https://trueseva.org"
   },
   {
@@ -2057,26 +2125,26 @@ const JSON_LD_SCHEMAS = [
     "mainEntity": [
       {
         "@type": "Question",
-        "name": "How does TrueSeva support elderly care homes in Tamil Nadu?",
+        "name": "How does HelpHomesIndia support Care for All Homes in Tamil Nadu?",
         "acceptedAnswer": {
           "@type": "Answer",
-          "text": "TrueSeva operates under TAFVA to identify authentic essential needs (new clothing, groceries, food and medical assistance) across 10 elderly homes in 10 Tamil Nadu districts, connecting donors directly without commission or intermediaries."
+          "text": "HelpHomesIndia operates under TAFVA to identify authentic essential needs (new clothing, groceries, food and medical assistance) across 10 Care for All Homes in 10 Tamil Nadu districts, connecting donors directly without commission or intermediaries."
         }
       },
       {
         "@type": "Question",
-        "name": "Does TrueSeva collect monetary donations directly?",
+        "name": "Does HelpHomesIndia collect monetary donations directly?",
         "acceptedAnswer": {
           "@type": "Answer",
-          "text": "No. TrueSeva does not collect or hold money or material donations. Donors send supplies directly to the homes or transfer funds directly to verified official trust accounts."
+          "text": "No. HelpHomesIndia does not collect or hold money or material donations. Donors send supplies directly to the homes or transfer funds directly to verified official trust accounts."
         }
       },
       {
         "@type": "Question",
-        "name": "How are elderly care homes verified on TrueSeva?",
+        "name": "How are Care for All Homes verified on HelpHomesIndia?",
         "acceptedAnswer": {
           "@type": "Answer",
-          "text": "Every home listed on TrueSeva is personally verified through on-ground fieldwork assessments by member agencies of the Tamil Nadu Federation of Voluntary Agencies (TAFVA)."
+          "text": "Every home listed on HelpHomesIndia is personally verified through on-ground fieldwork assessments by member agencies of the Tamil Nadu Federation of Voluntary Agencies (TAFVA)."
         }
       }
     ]

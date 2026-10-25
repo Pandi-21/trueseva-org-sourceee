@@ -5,7 +5,7 @@ export function Logo({ className = "h-12 w-12 md:h-14 md:w-14" }: { className?: 
   return (
     <img
       src={logo}
-      alt="TrueSeva Logo"
+      alt="HelpHomesIndia Logo"
       width={56}
       height={56}
       decoding="async"
@@ -27,7 +27,7 @@ export function Brand({ isFooter = false }: { isFooter?: boolean }) {
           className={`block font-display text-xl md:text-2xl font-bold tracking-tight ${isFooter ? "text-ink-foreground" : "text-foreground"
             }`}
         >
-          TrueSeva
+          HelpHomesIndia
         </span>
         <span
           className={`block text-[11px] md:text-xs ${isFooter ? "text-ink-foreground/75" : "text-muted-foreground"

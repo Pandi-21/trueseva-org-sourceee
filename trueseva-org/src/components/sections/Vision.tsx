@@ -5,7 +5,7 @@ const MISSION = [
   { icon: Shirt, t: "Needs-Based Support", d: "Match clothing quantities to the number of elderly men and women." },
   { icon: Leaf, t: "Nutritious Food Security", d: "Encourage suitable meals and essential groceries." },
   { icon: ShieldCheck, t: "Field Verification", d: "Recommend eligible homes assessed through actual fieldwork." },
-  { icon: Handshake, t: "Zero Commission, Direct Support", d: "Connect donors directly with elderly care homes." },
+  { icon: Handshake, t: "Zero Commission, Direct Support", d: "Connect donors directly with Care for All Homes." },
 ];
 
 export function Vision() {

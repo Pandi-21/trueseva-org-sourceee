@@ -1,5 +1,5 @@
 /**
- * Dynamic TrueSeva PDF Generator
+ * Dynamic HelpHomesIndia PDF Generator
  * Generates official vector PDF receipts dynamically based on visitor form submission data.
  */
 
@@ -56,7 +56,7 @@ export function createReceiptPdf(data: ReceiptData): Buffer {
 
   // Header Banner Box (Terracotta primary brand color)
   stream += rect(30, 725, 535, 85, 0.78, 0.32, 0.15); // #C75226 terracotta
-  stream += text("TRUESEVA INITIATIVE", 50, 775, 20, "F2", 1, 1, 1);
+  stream += text("HELPHOMESINDIA INITIATIVE", 50, 775, 20, "F2", 1, 1, 1);
   stream += text("TAFVA Verified Elders Care Support Initiative - Tamil Nadu", 50, 755, 10, "F1", 1, 0.92, 0.85);
   stream += text("100% Direct Support * Zero Intermediaries", 50, 740, 9, "F2", 1, 0.85, 0.5);
 
@@ -86,7 +86,7 @@ export function createReceiptPdf(data: ReceiptData): Buffer {
   const fields: [string, string][] = [
     ["Contributor Name:", data.fullName || "Supporter"],
     ["Mobile Number:", "+91 " + (data.mobile || "N/A")],
-    ["Selected Care Home:", data.ngo || "Elderly Care Home"],
+    ["Selected Care Home:", data.ngo || "Care for All Home"],
     ["District / City:", data.district || "Tamil Nadu"],
     ["Support Category:", data.supportType || "Elderly Care Assistance"],
     ["Coordination Status:", "TAFVA Field Verified - Direct Coordination Active"],
@@ -103,7 +103,7 @@ export function createReceiptPdf(data: ReceiptData): Buffer {
   // Field Verification Stamp Box
   stream += rect(40, 310, 515, 115, 0.95, 0.97, 0.96, true, 0.7, 0.85, 0.8);
   stream += text("VERIFICATION & DIRECT DISPATCH STATEMENT", 55, 400, 10, "F2", 0.15, 0.45, 0.4);
-  stream += text("This support acknowledgement has been officially recorded by TrueSeva operating", 55, 380, 9, "F1", 0.25, 0.3, 0.28);
+  stream += text("This support acknowledgement has been officially recorded by HelpHomesIndia operating", 55, 380, 9, "F1", 0.25, 0.3, 0.28);
   stream += text("under the field coordination of the Tamil Nadu Federation of Voluntary Agencies (TAFVA).", 55, 365, 9, "F1", 0.25, 0.3, 0.28);
   stream += text("All material contributions and monetary support connect directly with the registered elderly", 55, 350, 9, "F1", 0.25, 0.3, 0.28);
   stream += text("care homes identified through physical fieldwork across 10 districts of Tamil Nadu.", 55, 335, 9, "F1", 0.25, 0.3, 0.28);
@@ -119,9 +119,9 @@ export function createReceiptPdf(data: ReceiptData): Buffer {
 
   // Footer & Helpdesk
   stream += line(40, 160, 555, 160, 0.8, 0.8, 0.8, 1);
-  stream += text("TrueSeva Coordination Helpdesk: +91 91504 08850  |  Email: elderscare@trueseva.org", 85, 140, 9, "F2", 0.2, 0.2, 0.2);
+  stream += text("HelpHomesIndia Coordination Helpdesk: +91 91504 08850  |  Email: elderscare@trueseva.org", 85, 140, 9, "F2", 0.2, 0.2, 0.2);
   stream += text("Website: https://trueseva.org  |  TAFVA Secretariat, Tamil Nadu, India", 130, 125, 8.5, "F1", 0.45, 0.45, 0.45);
-  stream += text("This is a system-generated electronic acknowledgement receipt issued under TrueSeva.", 100, 95, 7.5, "F1", 0.55, 0.55, 0.55);
+  stream += text("This is a system-generated electronic acknowledgement receipt issued under HelpHomesIndia.", 100, 95, 7.5, "F1", 0.55, 0.55, 0.55);
 
   const streamLength = Buffer.byteLength(stream, "utf-8");
 

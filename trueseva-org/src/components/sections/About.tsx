@@ -8,7 +8,7 @@ export function About() {
         <Reveal className="lg:col-span-5">
           <img
             src={about}
-            alt="Supporting and honoring elderly care home residents in Tamil Nadu"
+            alt="Supporting and honoring Care for All Home residents in Tamil Nadu"
             loading="lazy"
             decoding="async"
             width={800}
@@ -21,16 +21,16 @@ export function About() {
           <h2 className="mt-4 text-4xl font-medium md:text-5xl">A Pilot Initiative for Elderly Care</h2>
           <div className="mt-8 space-y-5 text-lg leading-relaxed text-foreground/85">
             <p className="font-display text-2xl leading-snug text-foreground">
-              TrueSeva is a transparent community guidance platform operating under the guidance of the Tamil Nadu Federation of Voluntary Agencies (TAFVA).
+              HelpHomesIndia is a transparent community guidance platform operating under the guidance of the Tamil Nadu Federation of Voluntary Agencies (TAFVA).
             </p>
             <p>
-              Before developing a comprehensive statewide fundraising platform in the future, this pilot initiative identifies 10 elderly care homes across 10 districts for direct, transparent support.
+              Before developing a comprehensive statewide fundraising platform in the future, this pilot initiative identifies 10 Care for All Homes across 10 districts for direct, transparent support.
             </p>
             <p>
               The initiative focuses on actual needs: new clothing, essential kitchen groceries, and direct financial assistance for food and medical expenses.
             </p>
             <p className="border-l-2 border-primary pl-5">
-              TrueSeva does not collect monetary or material donations from the public. It acts as a connecting platform between donors and elderly care homes, enabling direct support without intermediaries.
+              HelpHomesIndia does not collect monetary or material donations from the public. It acts as a connecting platform between donors and Care for All Homes, enabling direct support without intermediaries.
             </p>
           </div>
         </Reveal>

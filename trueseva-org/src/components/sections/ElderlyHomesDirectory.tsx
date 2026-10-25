@@ -41,10 +41,10 @@ export function ElderlyHomesDirectory() {
     <section id="directory" className="pt-14 pb-14 lg:pt-16 lg:pb-16 bg-muted/20 border-t border-border/50">
       <div className="mx-auto max-w-7xl px-5 lg:px-8">
         <Reveal className="max-w-3xl">
-          <p className="eyebrow">Elderly Homes Directory</p>
-          <h2 className="mt-4 text-4xl font-medium md:text-5xl">Explore SMILE Elderly Homes</h2>
+          <p className="eyebrow">Care for All Homes Directory</p>
+          <h2 className="mt-4 text-4xl font-medium md:text-5xl">Explore Care for All Homes</h2>
           <p className="mt-4 text-lg text-muted-foreground">
-            Filter by district to find verified SMILE elderly care homes in Tamil Nadu. Connect directly to provide transparent support with dignity and care.
+            Filter by district to find verified SMILE Care for All Homes in Tamil Nadu. Connect directly to provide transparent support with dignity and care.
           </p>
         </Reveal>
 
@@ -134,13 +134,13 @@ export function ElderlyHomesDirectory() {
                 </div>
                 <h4 className="mt-4 text-lg font-semibold text-foreground">Select a District to View Homes</h4>
                 <p className="mt-2 text-sm text-muted-foreground max-w-md mx-auto">
-                  Choose a district from the dropdown filter above to see verified SMILE elderly care homes in that region.
+                  Choose a district from the dropdown filter above to see verified SMILE Care for All Homes in that region.
                 </p>
               </div>
             </Reveal>
           ) : displayedHomes.length === 0 ? (
             <div className="rounded-2xl border bg-card p-10 text-center">
-              <p className="text-muted-foreground">No elderly care homes found for the selected filter.</p>
+              <p className="text-muted-foreground">No Care for All Homes found for the selected filter.</p>
             </div>
           ) : (
             <div>

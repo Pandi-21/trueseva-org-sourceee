@@ -17,9 +17,9 @@ export function Footer() {
           <div className="lg:col-span-5 space-y-4">
             <Brand isFooter />
             <p className="text-sm leading-relaxed text-ink-foreground/80 max-w-md">
-              TrueSeva is a transparent community guidance platform operating under the guidance of the{" "}
+              HelpHomesIndia is a transparent community guidance platform operating under the guidance of the{" "}
               <strong className="text-ink-foreground">Tamil Nadu Federation of Voluntary Agencies (TAFVA)</strong>.
-              Connecting donors directly with verified elderly care homes across 10 districts.
+              Connecting donors directly with verified Care for All Homes across 10 districts.
             </p>
             <div className="inline-flex items-center gap-2 rounded-full border border-emerald-500/30 bg-emerald-500/10 px-3.5 py-1.5 text-xs font-medium text-emerald-400">
               <span className="h-2 w-2 rounded-full bg-emerald-400 animate-pulse" />
@@ -35,7 +35,7 @@ export function Footer() {
                 { id: "home", label: "Home" },
                 { id: "about", label: "About Us" },
                 { id: "vision", label: "Vision & Mission" },
-                { id: "directory", label: "Elderly Homes Directory" },
+                { id: "directory", label: "Care for All Homes Directory" },
                 { id: "how", label: "How It Works" },
                 { id: "gallery", label: "Photo Gallery" },
                 { id: "contact", label: "Contact Us" },
@@ -106,7 +106,7 @@ export function Footer() {
 
         {/* Bottom Bar */}
         <div className="mt-12 pt-6 border-t border-ink-foreground/10 text-xs text-ink-foreground/60 text-center sm:text-left">
-          <p>© 2026 TrueSeva Initiative. Guided by Tamil Nadu Federation of Voluntary Agencies (TAFVA). All rights reserved to VND Tech.</p>
+          <p>© 2026 HelpHomesIndia Initiative. Guided by Tamil Nadu Federation of Voluntary Agencies (TAFVA). All rights reserved to VND Tech.</p>
         </div>
       </div>
     </footer>
