@@ -98,7 +98,7 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
       { property: "og:image", content: "https://helphomesindia.org/hero.jpg" },
       { property: "og:image:width", content: "1200" },
       { property: "og:image:height", content: "630" },
-      { property: "og:image:alt", content: "HelpHomesIndia — Elders Care Initiative in Tamil Nadu" },
+      { property: "og:image:alt", content: "HelpHomesIndia — TAFVA Verified Orphanages Homes in Tamil Nadu" },
       { name: "twitter:card", content: "summary_large_image" },
       { name: "twitter:title", content: "HelpHomesIndia — Support Care for All Homes in Tamil Nadu" },
       { name: "twitter:description", content: "Directly support 10 verified Care for All Homes across 10 districts in Tamil Nadu. Field verified by TAFVA." },

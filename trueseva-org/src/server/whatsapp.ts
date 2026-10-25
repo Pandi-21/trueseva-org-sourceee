@@ -350,7 +350,7 @@ export async function sendEnquiryWhatsAppNotifications(enquiry: WhatsAppEnquiryP
     userResult = await sendWhatsAppTemplate(enquiry.mobile, templateName, "en", undefined, userParams);
   } else {
     // Standard text fallback
-    const welcomeText = `Hello ${enquiry.full_name},\n\nThank you for choosing to support our elderly care initiative through HelpHomesIndia! 🪔\n\nWe have received your details for ${enquiry.ngo} (${enquiry.district}). Your verified enquiry receipt will be sent to this chat shortly.\n\nWarm regards,\nHelpHomesIndia & TAFVA Elders Care Initiative`;
+    const welcomeText = `Hello ${enquiry.full_name},\n\nThank you for choosing to support our elderly care initiative through HelpHomesIndia! 🪔\n\nWe have received your details for ${enquiry.ngo} (${enquiry.district}). Your verified enquiry receipt will be sent to this chat shortly.\n\nWarm regards,\nHelpHomesIndia & TAFVA Verified Orphanages Homes`;
     userResult = await sendWhatsAppText(enquiry.mobile, welcomeText);
   }
 

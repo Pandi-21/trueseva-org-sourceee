@@ -33,7 +33,7 @@ export function Brand({ isFooter = false }: { isFooter?: boolean }) {
           className={`block text-[11px] md:text-xs ${isFooter ? "text-ink-foreground/75" : "text-muted-foreground"
             }`}
         >
-          TAFVA Verified Elders Care Initiative
+          TAFVA Verified Orphanages Homes
         </span>
       </span>
     </a>

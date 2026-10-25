@@ -43,7 +43,7 @@ function createReceiptPdf(data) {
   // Header Banner Box (Terracotta primary brand color)
   stream += rect(30, 725, 535, 85, 0.78, 0.32, 0.15); // #C75226 terracotta
   stream += text("HELPHOMESINDIA INITIATIVE", 50, 775, 20, "F2", 1, 1, 1);
-  stream += text("TAFVA Verified Elders Care Support Initiative - Tamil Nadu", 50, 755, 10, "F1", 1, 0.92, 0.85);
+  stream += text("TAFVA Verified Orphanages Homes Support Initiative - Tamil Nadu", 50, 755, 10, "F1", 1, 0.92, 0.85);
   stream += text("100% Direct Support * Zero Intermediaries", 50, 740, 9, "F2", 1, 0.85, 0.5);
 
   // Receipt Title Bar

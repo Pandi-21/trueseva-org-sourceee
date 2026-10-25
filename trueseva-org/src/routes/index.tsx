@@ -207,7 +207,7 @@ function Brand({ isFooter = false }: { isFooter?: boolean }) {
           HelpHomesIndia
         </span>
         <span className={`block text-[11px] md:text-xs ${isFooter ? "text-ink-foreground/75" : "text-muted-foreground"}`}>
-          TAFVA Verified Elders Care Initiative
+          TAFVA Verified Orphanages Homes
         </span>
       </span>
     </a>
@@ -1684,7 +1684,7 @@ function Contact() {
                         </span>
                       </h4>
                       <p className="text-xs text-muted-foreground mt-0.5">
-                        {selectedHome ? `Supporting: ${selectedHome.name} (${selectedHome.city})` : "Official Trust Account for Verified Elders Care"}
+                        {selectedHome ? `Supporting: ${selectedHome.name} (${selectedHome.city})` : "Official Trust Account for Verified Orphanages Homes"}
                       </p>
                     </div>
                   </div>
@@ -2076,7 +2076,7 @@ const JSON_LD_SCHEMAS = [
     "@context": "https://schema.org",
     "@type": "NonprofitOrganization",
     "name": "HelpHomesIndia",
-    "alternateName": "HelpHomesIndia Elders Care Initiative",
+    "alternateName": "HelpHomesIndia - TAFVA Verified Orphanages Homes",
     "url": "https://helphomesindia.org",
     "logo": "https://helphomesindia.org/logo.png",
     "image": "https://helphomesindia.org/hero.jpg",
