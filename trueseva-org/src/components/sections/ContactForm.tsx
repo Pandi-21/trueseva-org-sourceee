@@ -319,7 +319,7 @@ export function ContactForm() {
                 </select>
               </Field>
 
-              <Field id="ngo" label="2. SMILE Old Age Home" required error={errors.ngo}>
+              <Field id="ngo" label="2. Select Orphanage Home" required error={errors.ngo}>
                 <select
                   {...a("ngo")}
                   className={inputCls}
@@ -328,7 +328,7 @@ export function ContactForm() {
                   disabled={!v.district}
                 >
                   <option value="">
-                    {v.district ? "Select SMILE Old Age Home…" : "← First select a City / District"}
+                    {v.district ? "Select Orphanage Home…" : "← First select a City / District"}
                   </option>
                   {getNgosForDistrict(v.district).map((n) => (
                     <option key={n} value={n}>
