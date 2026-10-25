@@ -106,7 +106,7 @@ export function Footer() {
 
         {/* Bottom Bar */}
         <div className="mt-12 pt-6 border-t border-ink-foreground/10 text-xs text-ink-foreground/60 text-center sm:text-left">
-          <p>© 2026 TrueSeva Initiative. Guided by Tamil Nadu Federation of Voluntary Agencies (TAFVA). All rights reserved to VND Media.</p>
+          <p>© 2026 TrueSeva Initiative. Guided by Tamil Nadu Federation of Voluntary Agencies (TAFVA). All rights reserved to VND Tech.</p>
         </div>
       </div>
     </footer>
