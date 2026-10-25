@@ -1483,7 +1483,7 @@ function Contact() {
             {/* Form Title & Context Badge for Mobile Clarity */}
             <div className="border-b border-border/60 pb-3">
               <span className="eyebrow">Direct Assistance</span>
-              <h3 className="text-xl md:text-2xl font-bold text-foreground">Support Enquiry Form</h3>
+              <h3 className="text-xl md:text-2xl font-bold text-foreground">Direct Support Form</h3>
               <p className="mt-1 text-xs text-muted-foreground">
                 Submit your details to coordinate transparent, direct support with verified Care for All Homes.
               </p>
