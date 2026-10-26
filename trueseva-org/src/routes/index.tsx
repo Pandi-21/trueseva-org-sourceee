@@ -8,7 +8,7 @@ import {
   ChevronLeft, ChevronRight, Maximize2, QrCode, Copy, Check
 } from "lucide-react";
 import hero from "@/assets/image12.jpeg";
-import bannerImg from "@/assets/banners.png";
+import bannerImg from "@/assets/banners.jpg.jpeg";
 import qrCodeImg from "@/assets/rojavanam-qr.jpg";
 import humanityTrustQrImg from "@/assets/humanity-trust-qr.jpg";
 import about from "@/assets/image13.jpeg";
@@ -39,7 +39,7 @@ import {
   type PaymentAccountId,
 } from "@/lib/enquiry";
 
-export const WHATSAPP_NUMBER = "919150408850"; // Official WhatsApp Helpdesk Number
+export const WHATSAPP_NUMBER = "919150408860"; // Official WhatsApp Helpdesk Number
 
 type PaymentAccount = {
   beneficiary: string;
@@ -623,7 +623,7 @@ function ElderlyHomesDirectory() {
                         </p>
                       </div>
 
-                      {/* Contact Info (Unified Phone: +91 91504 08850, NO ADDRESS) */}
+                      {/* Contact Info (Unified Phone: +91 91504 08860, NO ADDRESS) */}
                       <div className="mt-5 rounded-xl bg-muted/30 p-3.5 text-xs space-y-2 border border-border/40">
                         <div className="flex items-center gap-2">
                           <Phone className="h-3.5 w-3.5 text-primary shrink-0" />
@@ -1465,7 +1465,7 @@ function Contact() {
           <div className="mt-10 space-y-6">
             {[
               { i: Building2, k: "Coordinating Organisation", val: "Tamil Nadu Federation of Voluntary Agencies (TAFVA)" },
-              { i: Phone, k: "WhatsApp / Helpdesk", val: "+91 91504 08850", href: `https://wa.me/${WHATSAPP_NUMBER}` },
+              { i: Phone, k: "WhatsApp / Helpdesk", val: "+91 91504 08860", href: `https://wa.me/${WHATSAPP_NUMBER}` },
               { i: Mail, k: "Email", val: "elderscare@helphomesindia.org", href: "mailto:elderscare@helphomesindia.org" },
             ].map((c) => (
               <div key={c.k} className="flex gap-4">
@@ -1511,7 +1511,7 @@ function Contact() {
                     }}
                     maxLength={10}
                     autoComplete="tel"
-                    placeholder="91504 08850"
+                    placeholder="91504 08860"
                   />
                 </div>
               </Field>
@@ -2032,7 +2032,7 @@ function Footer() {
                 </div>
                 <div>
                   <span className="block text-[11px] font-medium text-emerald-400">WhatsApp Helpdesk</span>
-                  <span className="font-semibold text-ink-foreground">+91 91504 08850</span>
+                  <span className="font-semibold text-ink-foreground">+91 91504 08860</span>
                 </div>
               </a>
 
@@ -2081,7 +2081,7 @@ const JSON_LD_SCHEMAS = [
     "logo": "https://helphomesindia.org/logo.png",
     "image": "https://helphomesindia.org/hero.jpg",
     "description": "HelpHomesIndia is a transparent community guidance platform operating under the guidance of the Tamil Nadu Federation of Voluntary Agencies (TAFVA), connecting donors directly with verified Care for All Homes across 10 districts.",
-    "telephone": "+91-9150408850",
+    "telephone": "+91-9150408860",
     "email": "elderscare@helphomesindia.org",
     "address": {
       "@type": "PostalAddress",
@@ -2098,7 +2098,7 @@ const JSON_LD_SCHEMAS = [
     },
     "contactPoint": {
       "@type": "ContactPoint",
-      "telephone": "+91-9150408850",
+      "telephone": "+91-9150408860",
       "contactType": "support",
       "areaServed": "IN",
       "availableLanguage": ["Tamil", "English"]

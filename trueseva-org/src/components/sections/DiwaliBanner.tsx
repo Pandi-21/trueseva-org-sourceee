@@ -1,4 +1,4 @@
-import bannerImg from "@/assets/banners.png";
+import bannerImg from "@/assets/banners.jpg.jpeg";
 import { Reveal } from "@/components/common/Reveal";
 import { scrollToSection } from "@/lib/constants";
 

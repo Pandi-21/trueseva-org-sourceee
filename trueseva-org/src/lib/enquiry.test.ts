@@ -64,7 +64,7 @@ describe("enquiry rules", () => {
       const home = getSmileHomeDetails(ngo, "Coimbatore");
       expect(home).toBeDefined();
       expect(home?.city).toBe("Coimbatore");
-      expect(home?.phone).toBe("9150408850");
+      expect(home?.phone).toBe("9150408860");
     }
   });
 

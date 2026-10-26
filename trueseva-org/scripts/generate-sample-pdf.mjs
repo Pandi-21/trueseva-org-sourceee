@@ -63,7 +63,7 @@ function createReceiptPdf(data) {
 
   const fields = [
     ["Contributor Name:", data.fullName || "Karthik Pandian"],
-    ["Mobile Number:", "+91 " + (data.mobile || "91504 08850")],
+    ["Mobile Number:", "+91 " + (data.mobile || "91504 08860")],
     ["Selected Care Home:", data.ngo || "Akshaya Trust SMILE Elderly Home"],
     ["District / City:", data.district || "Madurai, Tamil Nadu"],
     ["Support Category:", data.supportType || "Essential Groceries & Clothing"],
@@ -97,8 +97,8 @@ function createReceiptPdf(data) {
 
   // Footer & Helpdesk
   stream += line(40, 160, 555, 160, 0.8, 0.8, 0.8, 1);
-  stream += text("HelpHomesIndia Coordination Helpdesk: +91 91504 08850  |  Email: elderscare@trueseva.org", 85, 140, 9, "F2", 0.2, 0.2, 0.2);
-  stream += text("Website: https://trueseva.org  |  TAFVA Secretariat, Tamil Nadu, India", 130, 125, 8.5, "F1", 0.45, 0.45, 0.45);
+  stream += text("HelpHomesIndia Coordination Helpdesk: +91 91504 08860  |  Email: elderscare@helphomesindia.org", 85, 140, 9, "F2", 0.2, 0.2, 0.2);
+  stream += text("Website: https://helphomesindia.org  |  TAFVA Secretariat, Tamil Nadu, India", 130, 125, 8.5, "F1", 0.45, 0.45, 0.45);
   stream += text("This is a system-generated electronic acknowledgement receipt issued under HelpHomesIndia.", 100, 95, 7.5, "F1", 0.55, 0.55, 0.55);
 
   const streamLength = Buffer.byteLength(stream, "utf-8");
@@ -155,7 +155,7 @@ const sampleData = {
   ref: "TS-1082-2026",
   date: "24 October 2026, 3:30 PM",
   fullName: "Karthik Pandian",
-  mobile: "91504 08850",
+  mobile: "91504 08860",
   ngo: "Akshaya Trust SMILE Elderly Home",
   district: "Madurai, Tamil Nadu",
   supportType: "Essential Groceries & Clothing Assistance",

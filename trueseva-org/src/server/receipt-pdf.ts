@@ -119,7 +119,7 @@ export function createReceiptPdf(data: ReceiptData): Buffer {
 
   // Footer & Helpdesk
   stream += line(40, 160, 555, 160, 0.8, 0.8, 0.8, 1);
-  stream += text("HelpHomesIndia Coordination Helpdesk: +91 91504 08850  |  Email: elderscare@helphomesindia.org", 85, 140, 9, "F2", 0.2, 0.2, 0.2);
+  stream += text("HelpHomesIndia Coordination Helpdesk: +91 91504 08860  |  Email: elderscare@helphomesindia.org", 85, 140, 9, "F2", 0.2, 0.2, 0.2);
   stream += text("Website: https://helphomesindia.org  |  TAFVA Secretariat, Tamil Nadu, India", 130, 125, 8.5, "F1", 0.45, 0.45, 0.45);
   stream += text("This is a system-generated electronic acknowledgement receipt issued under HelpHomesIndia.", 100, 95, 7.5, "F1", 0.55, 0.55, 0.55);
 

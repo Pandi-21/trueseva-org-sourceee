@@ -1,6 +1,6 @@
 import type React from "react";
 
-export const WHATSAPP_NUMBER = "919150408850"; // Official WhatsApp Helpdesk Number
+export const WHATSAPP_NUMBER = "919150408860"; // Official WhatsApp Helpdesk Number
 
 export const NAV = [
   { id: "home", label: "Home" },

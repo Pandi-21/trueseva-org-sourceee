@@ -72,7 +72,7 @@ export function Footer() {
                 </div>
                 <div>
                   <span className="block text-[11px] font-medium text-emerald-400">WhatsApp Helpdesk</span>
-                  <span className="font-semibold text-ink-foreground">+91 91504 08850</span>
+                  <span className="font-semibold text-ink-foreground">+91 91504 08860</span>
                 </div>
               </a>
 

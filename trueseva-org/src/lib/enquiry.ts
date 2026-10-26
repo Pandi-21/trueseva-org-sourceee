@@ -21,7 +21,7 @@ export interface SmileHome {
   paymentAccount?: PaymentAccountId;
 }
 
-export const CENTRAL_PHONE = "9150408850";
+export const CENTRAL_PHONE = "9150408860";
 
 export const SMILE_HOMES: SmileHome[] = [
   {
